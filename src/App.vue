@@ -39,6 +39,7 @@
 
 
       <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
+      <div class="success-message" v-if="successMessage">{{ successMessage }}</div>
 
 
       <button type="submit">Отправить</button>
@@ -65,6 +66,7 @@ const form = reactive({
 });
 
 const errorMessage = ref('');
+const successMessage = ref('');
 
 
 
@@ -89,6 +91,7 @@ const onSubmit = async (data) => {
     } else {
       // Обработка успешного ответа
       const responseData = await response.json();
+      successMessage.value = 'Все получилось'
       console.log('Успешный ответ:', responseData);
 
 
@@ -116,6 +119,10 @@ body {
 
 .error-message {
   color: red;
+  margin-top: 10px;
+}
+.success-message{
+  color: green;
   margin-top: 10px;
 }
 .container{
