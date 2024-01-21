@@ -85,7 +85,7 @@ const onSubmit = async (data) => {
     if (!response.ok) {
       // Обрабатывайте ошибки сервера здесь
       const res = await response.json()
-      errorMessage.value = ` ${res.error}`
+      errorMessage.value = `Перейди в исходную точку в игре ${res.error}`
 
       console.error('Ошибка сервера:', res.error);
     } else {
@@ -130,9 +130,32 @@ body {
   margin: 0 auto;
 }
 .wrapper{
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  //display: flex;
+  //align-items: center;
+  //justify-content: center;
+  padding-left: 300px;
+  padding-right: 300px;
+
+}
+@media screen and (max-width: 1200px) {
+  .wrapper {
+    padding-left: 150px;
+    padding-right: 150px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .wrapper {
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .wrapper {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
 }
 form {
   text-align: center;
