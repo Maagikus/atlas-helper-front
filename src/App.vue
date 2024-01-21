@@ -71,6 +71,7 @@ const errorMessage = ref('');
 
 const onSubmit = async (data) => {
   try {
+    errorMessage.value = ''
     const response = await fetch('https://staratlas-helper.onrender.com/start', {
       method: 'POST',
       headers: {
@@ -94,7 +95,7 @@ const onSubmit = async (data) => {
     }
   } catch (error) {
     // Обрабатывайте сетевые ошибки здесь
-    errorMessage.value = ` ${error}`
+    errorMessage.value = `Перейди в исходную точку в игре ${error}`
 
     console.error('Ошибка сети:', error);
 
