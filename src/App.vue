@@ -118,7 +118,7 @@ const form = reactive({
 const errorMessage = ref("");
 const successMessage = ref("");
 
-const socket = io("https://staratlas-helper.onrender.com");
+const socket = io("https://staratlas-helper-98g9.onrender.com");
 
 socket.on("message", (response) => {
   const responseData = JSON.parse(response);
