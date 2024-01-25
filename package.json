@@ -11,7 +11,9 @@
   "dependencies": {
     "bootstrap": "^5.3.2",
     "bootstrap-vue": "^2.23.1",
-    "vue": "^3.4.15"
+    "socket.io-client": "^4.7.4",
+    "vue": "^3.4.15",
+    "vue-native-websocket": "^2.0.15"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",

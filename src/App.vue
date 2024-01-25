@@ -94,6 +94,7 @@
 <script setup>
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+import { io } from "socket.io-client";
 import { reactive, ref } from "vue";
 const resources = ref([
   "arco",
@@ -117,40 +118,35 @@ const form = reactive({
 const errorMessage = ref("");
 const successMessage = ref("");
 
-const onSubmit = async (data) => {
+const socket = io("https://staratlas-helper.onrender.com");
+
+socket.on("message", (response) => {
+  const responseData = JSON.parse(response);
+  if (responseData.success) {
+    successMessage.value = "Все получилось";
+    console.log("Успешный ответ:", responseData);
+  } else {
+    successMessage.value = "";
+    errorMessage.value = `Перейди в исходную точку в игре ${responseData.error}`;
+    console.error("Ошибка сервера:", responseData.error);
+  }
+});
+
+socket.on("connect_error", (error) => {
+  successMessage.value = "";
+  errorMessage.value = `Перейди в исходную точку в игре ${error}`;
+  console.error("Ошибка сети:", error);
+});
+
+const onSubmit = () => {
   try {
     successMessage.value = "Работаем";
     errorMessage.value = "";
-    const response = await fetch(
-      "https://staratlas-helper.onrender.com/start",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
 
-    if (!response.ok) {
-      // Обрабатывайте ошибки сервера здесь
-      const res = await response.json();
-      successMessage.value = "";
-      errorMessage.value = `Перейди в исходную точку в игре ${res.error}`;
-
-      console.error("Ошибка сервера:", res.error);
-    } else {
-      // Обработка успешного ответа
-      const responseData = await response.json();
-      successMessage.value = "Все получилось";
-      console.log("Успешный ответ:", responseData);
-    }
+    // Отправка данных на сервер через веб-сокет
+    socket.send(JSON.stringify(form));
   } catch (error) {
-    // Обрабатывайте сетевые ошибки здесь
-    successMessage.value = "";
-    errorMessage.value = `Перейди в исходную точку в игре ${error}`;
-
-    console.error("Ошибка сети:", error);
+    console.error("Произошла ошибка:", error);
   }
 };
 </script>
