@@ -205,7 +205,7 @@
                 <label for="resource">Ресурс:</label>
                 <div class="select__wrap">
                   <select
-                    v-model="form.resource"
+                    v-model="formForTransfer.resource"
                     id="resource"
                     name="resource"
                     required
@@ -307,7 +307,7 @@
                 <label for="resource">Ресурс:</label>
                 <div class="select__wrap">
                   <select
-                    v-model="form.resource"
+                    v-model="formForTransfer.resource"
                     id="resource"
                     name="resource"
                     required
@@ -434,12 +434,12 @@ const formForTransfer = reactive({
 const errorMessage = ref("");
 const successMessage = ref("");
 
-const socket = io("https://staratlas-helper-98g9.onrender.com");
+// const socket = io("https://staratlas-helper-98g9.onrender.com");
 
 // const socket = io(
 //   "https://staratlas-helper-98g9.onrender.com" || "http://localhost:3000"
 // );
-// const socket = io("http://localhost:8080");
+const socket = io("http://localhost:8080");
 
 socket.on("message", (response) => {
   const responseData = JSON.parse(response);
