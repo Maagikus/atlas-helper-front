@@ -114,17 +114,6 @@
             </select>
           </div>
 
-          <div class="form__item">
-            <label for="key">Пароль:</label>
-            <input
-              v-model="form.key"
-              type="text"
-              id="key"
-              name="key"
-              required
-            />
-          </div>
-
           <div class="error-message" v-if="errorMessage">
             {{ errorMessage }}
           </div>
@@ -158,19 +147,7 @@
                   </option>
                 </select>
               </div>
-              <div class="form-transport__item">
-                <label for="" class="form-transport__label">Key</label>
-                <input
-                  v-model="formForTransfer.key"
-                  id=""
-                  autocomplete="off"
-                  type="text"
-                  name="form[]"
-                  data-error="Ошибка"
-                  placeholder=""
-                  class="form-transport__input"
-                />
-              </div>
+
               <div class="form-transport__item">
                 <label for="" class="form-transport__label">Loops</label>
                 <input
