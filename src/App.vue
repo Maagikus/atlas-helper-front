@@ -1,5 +1,23 @@
 <template>
   <div class="container">
+    <div class="login">
+      <form @submit.prevent="setKey(key)" class="login__form">
+        <div class="login__input">
+          <label for="" class="form-transport__label">Key</label>
+          <input
+            v-model="key"
+            id=""
+            autocomplete="off"
+            type="text"
+            name="form[]"
+            data-error="Ошибка"
+            placeholder=""
+            class="form-transport__input"
+          />
+        </div>
+        <button type="submit" class="login__button">Задать ключ</button>
+      </form>
+    </div>
     <div class="wrapper">
       <ul class="menu">
         <li
@@ -83,14 +101,17 @@
           </div>
 
           <div class="form__item">
-            <label for="fleet">fleet:</label>
-            <input
-              v-model="form.fleet"
-              type="text"
-              id="fleet"
-              name="fleet"
-              required
-            />
+            <label for="fleet">Флот:</label>
+            <select v-model="form.fleet" id="fleet" name="fleet" required>
+              <option disabled value="">Выберите флот</option>
+              <option
+                v-for="(fleet, index) in fleets"
+                :key="index"
+                :value="fleet"
+              >
+                {{ fleet }}
+              </option>
+            </select>
           </div>
 
           <div class="form__item">
@@ -119,18 +140,23 @@
           <div class="form-transport__wrapper">
             <div class="form-transport__general">
               <h2 class="form-transport__title">General Settings</h2>
-              <div class="form-transport__item">
-                <label for="" class="form-transport__label">Fleet</label>
-                <input
+              <div class="form__item">
+                <label for="fleet">Флот:</label>
+                <select
                   v-model="formForTransfer.fleet"
-                  id=""
-                  autocomplete="off"
-                  type="text"
-                  name="form[]"
-                  data-error="Ошибка"
-                  placeholder=""
-                  class="form-transport__input"
-                />
+                  id="fleet"
+                  name="fleet"
+                  required
+                >
+                  <option disabled value="">Выберите флот</option>
+                  <option
+                    v-for="(fleet, index) in fleets"
+                    :key="index"
+                    :value="fleet"
+                  >
+                    {{ fleet }}
+                  </option>
+                </select>
               </div>
               <div class="form-transport__item">
                 <label for="" class="form-transport__label">Key</label>
@@ -373,6 +399,13 @@
           <div @click="movement(formForTransfer)" class="move">двигаться</div>
         </form>
       </div>
+      <div v-if="fleetData.length > 0" class="process">
+        <ProcessStatus
+          @execute-movement="movement"
+          v-for="item in fleetData"
+          :fleet="item"
+        ></ProcessStatus>
+      </div>
     </div>
   </div>
 </template>
@@ -382,9 +415,13 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import { io } from "socket.io-client";
 import { reactive, ref, onMounted } from "vue";
-
+import ProcessStatus from "./components/ProcessStatus.vue";
+import { useCookies } from "vue3-cookies";
+const fleets = ref([]);
+const key = ref("");
+const fleetData = ref([]);
 const menuItem = ref(0);
-
+const { cookies } = useCookies();
 const resources = ref([
   "arco",
   "biomass",
@@ -402,13 +439,13 @@ const form = reactive({
   loop: "",
   food: "",
   time: "",
-  key: "",
+  key: key.value,
   resource: resources.value[0],
-  fleet: "",
+  fleet: fleets.value[0],
 });
 const formForTransfer = reactive({
   loop: "",
-  key: "",
+  key: key.value,
   fleet: "",
   fillFuel: "",
   fillAmmo: "",
@@ -433,6 +470,76 @@ const formForTransfer = reactive({
 
 const errorMessage = ref("");
 const successMessage = ref("");
+const loadFleets = async () => {
+  try {
+    const response = await fetch(
+      "https://staratlas-helper-98g9.onrender.com/getAllFleet",
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    ); // Обращаемся к правильному URL
+    if (!response.ok) {
+      throw new Error("Ошибка при загрузке списка флотов");
+    }
+    const data = await response.json();
+
+    fleets.value = [...data.planets];
+  } catch (error) {
+    console.error(error);
+  }
+};
+const setKey = async (key) => {
+  try {
+    const response = await fetch(
+      "https://staratlas-helper-98g9.onrender.com/saveKeyToCookie",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ key }),
+        credentials: "include",
+      }
+    );
+
+    if (response.ok) {
+      const result = await response.json();
+      form.key = key;
+      formForTransfer.key = key;
+      loadFleets();
+    } else {
+      console.error("Ошибка при сохранении ключа в куки:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Произошла ошибка при отправке запроса:", error);
+  }
+};
+const getDataWithKey = async () => {
+  try {
+    const response = await fetch(
+      "https://staratlas-helper-98g9.onrender.com/getDataWithKey",
+      {
+        method: "GET",
+        credentials: "include", // Передача куки в запросе
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Ошибка HTTP: ${response.status}`);
+    }
+    const data = await response.text();
+    return data; // Вывод полученных данных в консоль
+    // Здесь можно обрабатывать полученные данные или выполнять другие действия
+  } catch (error) {
+    console.error("Ошибка при получении данных:", error);
+  }
+};
+onMounted(async () => {
+  const dataFromLocalStorage = JSON.parse(localStorage.getItem("fleetData"));
+  if (dataFromLocalStorage) {
+    fleetData.value = dataFromLocalStorage;
+  }
+});
 
 const socket = io("https://staratlas-helper-98g9.onrender.com");
 
@@ -443,21 +550,23 @@ const socket = io("https://staratlas-helper-98g9.onrender.com");
 
 socket.on("message", (response) => {
   const responseData = JSON.parse(response);
-  if (responseData.success) {
-    successMessage.value = "Все получилось";
-    console.log("Успешный ответ:", responseData);
+  const index = fleetData.value.findIndex(
+    (item) => item.fleet === responseData.fleet
+  );
+  if (index !== -1) {
+    // Обновляем только поля action и mess для найденного объекта
+    fleetData.value[index].action = responseData.action;
+    fleetData.value[index].mess = responseData.mess;
   } else {
+    fleetData.value.push(responseData);
+  }
+  localStorage.setItem("fleetData", JSON.stringify(fleetData.value));
+  if (!responseData.success) {
     successMessage.value = "";
     errorMessage.value = `Перейди в исходную точку в игре ${responseData.error}`;
     console.error("Ошибка сервера:", responseData.error);
   }
 });
-socket.on("connect_error", (error) => {
-  successMessage.value = "";
-  errorMessage.value = `Перейди в исходную точку в игре ${error}`;
-  console.error("Ошибка сети:", error);
-});
-
 const onSubmit = () => {
   try {
     successMessage.value = "Работаем";
@@ -469,20 +578,52 @@ const onSubmit = () => {
     console.error("Произошла ошибка:", error);
   }
 };
-const movement = () => {
+socket.on("connect_error", (error) => {
+  successMessage.value = "";
+  errorMessage.value = `Перейди в исходную точку в игре ${error}`;
+  console.error("Ошибка сети:", error);
+});
+
+// const movement = () => {
+//   const data = {
+//     fleet: formForTransfer.fleet,
+//     fuelAtStartingPoint: formForTransfer.fuelAtStartingPoint,
+//     fuelAtDestination: formForTransfer.fuelAtDestination,
+//     resourceValueAtDestination: formForTransfer.resourceValueAtDestination,
+//     resourceValueAtStartingPoint: formForTransfer.resourceValueAtStartingPoint,
+//     loop: formForTransfer.loop,
+//     key: formForTransfer.key,
+//     resource: formForTransfer.resource,
+//     forwardCoordForWarp: formForTransfer.forwardCoordForWarp,
+//     forwardCoordForSubWarp: formForTransfer.forwardCoordForSubWarp,
+//     backCoordForWarp: formForTransfer.backCoordForWarp,
+//     backCoordForSubWarp: formForTransfer.backCoordForSubWarp,
+//   };
+//   try {
+//     successMessage.value = "Двигаемся";
+//     errorMessage.value = "";
+
+//     // Отправка данных на сервер через веб-сокет
+//     socket.emit("move", JSON.stringify(data));
+//   } catch (error) {
+//     console.error("Произошла ошибка:", error);
+//   }
+// };
+
+const movement = (dataForSending) => {
   const data = {
-    fleet: formForTransfer.fleet,
-    fuelAtStartingPoint: formForTransfer.fuelAtStartingPoint,
-    fuelAtDestination: formForTransfer.fuelAtDestination,
-    resourceValueAtDestination: formForTransfer.resourceValueAtDestination,
-    resourceValueAtStartingPoint: formForTransfer.resourceValueAtStartingPoint,
-    loop: formForTransfer.loop,
-    key: formForTransfer.key,
-    resource: formForTransfer.resource,
-    forwardCoordForWarp: formForTransfer.forwardCoordForWarp,
-    forwardCoordForSubWarp: formForTransfer.forwardCoordForSubWarp,
-    backCoordForWarp: formForTransfer.backCoordForWarp,
-    backCoordForSubWarp: formForTransfer.backCoordForSubWarp,
+    fleet: dataForSending.fleet,
+    fuelAtStartingPoint: dataForSending.fuelAtStartingPoint,
+    fuelAtDestination: dataForSending.fuelAtDestination,
+    resourceValueAtDestination: dataForSending.resourceValueAtDestination,
+    resourceValueAtStartingPoint: dataForSending.resourceValueAtStartingPoint,
+    loop: dataForSending.loop,
+    key: dataForSending.key,
+    resource: dataForSending.resource,
+    forwardCoordForWarp: dataForSending.forwardCoordForWarp,
+    forwardCoordForSubWarp: dataForSending.forwardCoordForSubWarp,
+    backCoordForWarp: dataForSending.backCoordForWarp,
+    backCoordForSubWarp: dataForSending.backCoordForSubWarp,
   };
   try {
     successMessage.value = "Двигаемся";
@@ -496,7 +637,7 @@ const movement = () => {
 };
 </script>
 
-<style scoped>
+<style>
 body {
   //font-family: Arial, sans-serif;
   //display: flex;
@@ -591,7 +732,9 @@ button {
   cursor: pointer;
   transition: background-color 0.3s;
 }
-
+.move:hover {
+  background-color: #2980b9;
+}
 button:hover {
   background-color: #2980b9;
 }
@@ -648,5 +791,10 @@ button:hover {
 
 .menu__item:hover {
   background-color: #f2f2f2;
+}
+.process {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 </style>

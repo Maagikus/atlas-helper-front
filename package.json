@@ -19,7 +19,8 @@
     "solana-wallets-vue": "^0.6.1",
     "vue": "^3.4.15",
     "vue-native-websocket": "^2.0.15",
-    "vue-socket.io": "^3.0.10"
+    "vue-socket.io": "^3.0.10",
+    "vue3-cookies": "^1.0.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",
