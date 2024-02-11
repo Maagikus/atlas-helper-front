@@ -447,15 +447,13 @@ const formForTransfer = reactive({
 
 const errorMessage = ref("");
 const successMessage = ref("");
-const loadFleets = async () => {
+const loadFleets = async (userKey) => {
   try {
     const response = await fetch(
-      "https://staratlas-helper-98g9.onrender.com/getAllFleet",
-      {
-        method: "GET",
-        credentials: "include",
-      }
-    ); // Обращаемся к правильному URL
+      `https://staratlas-helper-98g9.onrender.com/getAllFleet?key=${encodeURIComponent(
+        userKey
+      )}`
+    );
     if (!response.ok) {
       throw new Error("Ошибка при загрузке списка флотов");
     }
@@ -467,30 +465,33 @@ const loadFleets = async () => {
   }
 };
 const setKey = async (key) => {
-  try {
-    const response = await fetch(
-      "https://staratlas-helper-98g9.onrender.com/saveKeyToCookie",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ key }),
-        credentials: "include",
-      }
-    );
+  form.key = key;
+  formForTransfer.key = key;
+  loadFleets(key);
+  //   try {
+  //     const response = await fetch(
+  //       "https://staratlas-helper-98g9.onrender.com/saveKeyToCookie",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ key }),
+  //         credentials: "include",
+  //       }
+  //     );
 
-    if (response.ok) {
-      const result = await response.json();
-      form.key = key;
-      formForTransfer.key = key;
-      loadFleets();
-    } else {
-      console.error("Ошибка при сохранении ключа в куки:", response.statusText);
-    }
-  } catch (error) {
-    console.error("Произошла ошибка при отправке запроса:", error);
-  }
+  //     if (response.ok) {
+  //       const result = await response.json();
+  //       form.key = key;
+  //       formForTransfer.key = key;
+  //       loadFleets();
+  //     } else {
+  //       console.error("Ошибка при сохранении ключа в куки:", response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error("Произошла ошибка при отправке запроса:", error);
+  //   }
 };
 const getDataWithKey = async () => {
   try {
