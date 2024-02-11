@@ -493,25 +493,22 @@ const setKey = async (key) => {
   //     console.error("Произошла ошибка при отправке запроса:", error);
   //   }
 };
-const getDataWithKey = async () => {
-  try {
-    const response = await fetch(
-      "https://staratlas-helper-98g9.onrender.com/getDataWithKey",
-      {
-        method: "GET",
-        credentials: "include", // Передача куки в запросе
-      }
-    );
-    if (!response.ok) {
-      throw new Error(`Ошибка HTTP: ${response.status}`);
-    }
-    const data = await response.text();
-    return data; // Вывод полученных данных в консоль
-    // Здесь можно обрабатывать полученные данные или выполнять другие действия
-  } catch (error) {
-    console.error("Ошибка при получении данных:", error);
-  }
-};
+// const getDataWithKey = async () => {
+//   try {
+//     const response = await fetch("http://localhost:8080/getDataWithKey", {
+//       method: "GET",
+//       credentials: "include", // Передача куки в запросе
+//     });
+//     if (!response.ok) {
+//       throw new Error(`Ошибка HTTP: ${response.status}`);
+//     }
+//     const data = await response.text();
+//     return data; // Вывод полученных данных в консоль
+//     // Здесь можно обрабатывать полученные данные или выполнять другие действия
+//   } catch (error) {
+//     console.error("Ошибка при получении данных:", error);
+//   }
+// };
 onMounted(async () => {
   const dataFromLocalStorage = JSON.parse(localStorage.getItem("fleetData"));
   if (dataFromLocalStorage) {
