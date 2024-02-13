@@ -411,6 +411,7 @@ const resources = ref([
   "framework",
   "fuel",
   "polymer",
+  "copper_ore",
 ]);
 const form = reactive({
   loop: "",
