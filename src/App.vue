@@ -412,6 +412,7 @@ const resources = ref([
   "fuel",
   "polymer",
   "copper_ore",
+  "magnet",
 ]);
 const form = reactive({
   loop: "",
@@ -517,12 +518,12 @@ onMounted(async () => {
   }
 });
 
-const socket = io("https://staratlas-helper-98g9.onrender.com");
+// const socket = io("https://staratlas-helper-98g9.onrender.com");
 
 // const socket = io(
 //   "https://staratlas-helper-98g9.onrender.com" || "http://localhost:3000"
 // );
-// const socket = io("http://localhost:8080");
+const socket = io("http://localhost:8080");
 
 socket.on("message", (response) => {
   const responseData = JSON.parse(response);
