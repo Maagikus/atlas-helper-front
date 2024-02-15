@@ -16,6 +16,10 @@
           />
         </div>
         <button type="submit" class="login__button">Задать ключ</button>
+        <div v-if="cklicked" class="forSanuya">
+          <img src="./assets/1.png" alt="" />
+          <div class="text">Ты нажал!!!</div>
+        </div>
       </form>
     </div>
     <div class="wrapper">
@@ -399,6 +403,7 @@ const key = ref("");
 const fleetData = ref([]);
 const menuItem = ref(0);
 const { cookies } = useCookies();
+const cklicked = ref(false);
 const resources = ref([
   "arco",
   "biomass",
@@ -470,6 +475,7 @@ const setKey = async (key) => {
   form.key = key;
   formForTransfer.key = key;
   loadFleets(key);
+  cklicked.value = true;
   //   try {
   //     const response = await fetch(
   //       "https://staratlas-helper-98g9.onrender.com/saveKeyToCookie",
@@ -518,12 +524,12 @@ onMounted(async () => {
   }
 });
 
-const socket = io("https://staratlas-helper-98g9.onrender.com");
+// const socket = io("https://staratlas-helper-98g9.onrender.com");
 
 // const socket = io(
 //   "https://staratlas-helper-98g9.onrender.com" || "http://localhost:3000"
 // );
-// const socket = io("http://localhost:8080");
+const socket = io("http://localhost:8080");
 
 socket.on("message", (response) => {
   const responseData = JSON.parse(response);
@@ -773,5 +779,22 @@ button:hover {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+.login__form {
+  position: relative;
+}
+.forSanuya {
+  width: 500px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.text {
+  font-size: 50px;
+  color: #29a4c3;
+}
+.forSanuya img {
+  width: 20%;
+  height: 500%;
 }
 </style>
