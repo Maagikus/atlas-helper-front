@@ -124,9 +124,7 @@
           <div class="success-message" v-if="successMessage">
             {{ successMessage }}
           </div>
-          <div class="move" @click="setSettingsForMining(form)">
-            set movement settings
-          </div>
+
           <button type="submit">Отправить</button>
         </form>
       </div>
@@ -458,10 +456,6 @@ const formForTransfer = reactive({
   fuelAtDestination: "",
 });
 const settingsForTransfer = ref([]);
-const settingsForMining = ref([]);
-const setSettingsForMining = (data) => {
-  settingsForMining.value = [...settingsForMining.value, data];
-};
 const setSettings = (dataForSending) => {
   const data = {
     fleet: dataForSending.fleet,
@@ -584,7 +578,7 @@ const onSubmit = () => {
     errorMessage.value = "";
 
     // Отправка данных на сервер через веб-сокет
-    socket.send(JSON.stringify(settingsForMining.value));
+    socket.send(JSON.stringify(form));
   } catch (error) {
     console.error("Произошла ошибка:", error);
   }
