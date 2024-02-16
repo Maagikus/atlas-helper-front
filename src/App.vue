@@ -377,6 +377,9 @@
           <div class="success-message" v-if="successMessage">
             {{ successMessage }}
           </div>
+          <div class="move" @click="setSettings(formForTransfer)">
+            set movement settings
+          </div>
           <div @click="movement(formForTransfer)" class="move">двигаться</div>
         </form>
       </div>
@@ -418,6 +421,7 @@ const resources = ref([
   "polymer",
   "copper_ore",
   "magnet",
+  "copper",
 ]);
 const form = reactive({
   loop: "",
@@ -451,7 +455,25 @@ const formForTransfer = reactive({
   fuelAtStartingPoint: "",
   fuelAtDestination: "",
 });
-
+const settingsForTransfer = ref([]);
+const setSettings = (dataForSending) => {
+  const data = {
+    fleet: dataForSending.fleet,
+    fuelAtStartingPoint: dataForSending.fuelAtStartingPoint,
+    fuelAtDestination: dataForSending.fuelAtDestination,
+    resourceValueAtDestination: dataForSending.resourceValueAtDestination,
+    resourceValueAtStartingPoint: dataForSending.resourceValueAtStartingPoint,
+    loop: dataForSending.loop,
+    key: dataForSending.key,
+    resource: dataForSending.resource,
+    forwardCoordForWarp: dataForSending.forwardCoordForWarp,
+    forwardCoordForSubWarp: dataForSending.forwardCoordForSubWarp,
+    backCoordForWarp: dataForSending.backCoordForWarp,
+    backCoordForSubWarp: dataForSending.backCoordForSubWarp,
+  };
+  settingsForTransfer.value = [...settingsForTransfer.value, data];
+  console.log(settingsForTransfer.value);
+};
 const errorMessage = ref("");
 const successMessage = ref("");
 const loadFleets = async (userKey) => {
@@ -613,7 +635,7 @@ const movement = (dataForSending) => {
     errorMessage.value = "";
 
     // Отправка данных на сервер через веб-сокет
-    socket.emit("move", JSON.stringify(data));
+    socket.emit("move", JSON.stringify(settingsForTransfer.value));
   } catch (error) {
     console.error("Произошла ошибка:", error);
   }
