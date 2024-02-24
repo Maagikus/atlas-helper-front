@@ -53,7 +53,7 @@
             />
           </div>
 
-          <div class="form__item">
+          <!-- <div class="form__item">
             <label for="food">Количество еды:</label>
             <input
               v-model="form.food"
@@ -62,9 +62,9 @@
               name="food"
               required
             />
-          </div>
+          </div> -->
 
-          <div class="form__item">
+          <!-- <div class="form__item">
             <label for="time">Время в минутах:</label>
             <input
               v-model="form.time"
@@ -73,7 +73,7 @@
               name="time"
               required
             />
-          </div>
+          </div> -->
 
           <div class="form__item">
             <label for="resource">Ресурс:</label>
@@ -461,8 +461,6 @@ const settingForMining = ref([]);
 const setMiningSettings = (dataForMining) => {
   const data = {
     loop: dataForMining.loop,
-    food: dataForMining.food,
-    time: dataForMining.time,
     key: dataForMining.key,
     resource: dataForMining.resource,
     fleet: dataForMining.fleet,
@@ -561,12 +559,12 @@ onMounted(async () => {
   }
 });
 
-const socket = io("https://staratlas-helper-98g9.onrender.com");
+// const socket = io("https://staratlas-helper-98g9.onrender.com");
 
 // const socket = io(
 //   "https://staratlas-helper-98g9.onrender.com" || "http://localhost:3000"
 // );
-// const socket = io("http://localhost:8080");
+const socket = io("http://localhost:8080");
 
 socket.on("message", (response) => {
   const responseData = JSON.parse(response);
