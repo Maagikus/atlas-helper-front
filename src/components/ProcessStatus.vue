@@ -18,13 +18,19 @@
   </div>
 </template>
 <script setup props="props">
+import { onMounted, ref } from "vue";
+
 const props = defineProps({
   fleet: Object,
 });
 const emit = defineEmits(["execute-movement"]);
+const data = ref([]);
+onMounted(() => {
+  data.value.push(props.fleet.dataForRepeating);
+});
 const executeMovement = () => {
-  // Вызываем событие, которое сообщит родительскому компоненту вызвать функцию movement
-  emit("execute-movement", props.fleet.dataForRepeating);
+  console.log(emit);
+  emit("execute-movement");
 };
 </script>
 <style scoped>

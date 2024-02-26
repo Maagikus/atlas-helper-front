@@ -41,7 +41,11 @@
       </ul>
       <div v-if="menuItem === 0" class="mining-form">
         <h2 class="mining-form__title">Mining</h2>
-        <form @submit.prevent="onSubmit(form)" id="myForm" class="form">
+        <form
+          @submit.prevent="onSubmit(settingForMining)"
+          id="myForm"
+          class="form"
+        >
           <div class="form__item">
             <label for="loop">Количество итераций:</label>
             <input
@@ -385,9 +389,9 @@
       </div>
       <div v-if="fleetData.length > 0" class="process">
         <ProcessStatus
-          @execute-movement="movement"
           v-for="item in fleetData"
           :fleet="item"
+          @execute-movement="handleExecuteMovement(item)"
         ></ProcessStatus>
       </div>
     </div>
@@ -511,47 +515,19 @@ const setKey = async (key) => {
   formForTransfer.key = key;
   loadFleets(key);
   cklicked.value = true;
-  //   try {
-  //     const response = await fetch(
-  //       "https://staratlas-helper-98g9.onrender.com/saveKeyToCookie",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ key }),
-  //         credentials: "include",
-  //       }
-  //     );
-
-  //     if (response.ok) {
-  //       const result = await response.json();
-  //       form.key = key;
-  //       formForTransfer.key = key;
-  //       loadFleets();
-  //     } else {
-  //       console.error("Ошибка при сохранении ключа в куки:", response.statusText);
-  //     }
-  //   } catch (error) {
-  //     console.error("Произошла ошибка при отправке запроса:", error);
-  //   }
 };
-// const getDataWithKey = async () => {
-//   try {
-//     const response = await fetch("http://localhost:8080/getDataWithKey", {
-//       method: "GET",
-//       credentials: "include", // Передача куки в запросе
-//     });
-//     if (!response.ok) {
-//       throw new Error(`Ошибка HTTP: ${response.status}`);
-//     }
-//     const data = await response.text();
-//     return data; // Вывод полученных данных в консоль
-//     // Здесь можно обрабатывать полученные данные или выполнять другие действия
-//   } catch (error) {
-//     console.error("Ошибка при получении данных:", error);
-//   }
-// };
+
+const handleExecuteMovement = (item) => {
+  console.log("Item program:", item.program); // Выводим значение item.program для отладки
+
+  // Определяем, какая функция должна быть вызвана в зависимости от значения item.program
+  if (item.program === "mining") {
+    onSubmit([item.dataForRepeating]); // Вызываем функцию onSubmit
+  } else {
+    movement([item.dataForRepeating]); // Вызываем функцию movement
+  }
+};
+
 onMounted(async () => {
   const dataFromLocalStorage = JSON.parse(localStorage.getItem("fleetData"));
   if (dataFromLocalStorage) {
@@ -568,6 +544,7 @@ const socket = io("https://staratlas-helper-98g9.onrender.com");
 
 socket.on("message", (response) => {
   const responseData = JSON.parse(response);
+
   const index = fleetData.value.findIndex(
     (item) => item.fleet === responseData.fleet
   );
@@ -585,13 +562,12 @@ socket.on("message", (response) => {
     console.error("Ошибка сервера:", responseData.error);
   }
 });
-const onSubmit = () => {
+const onSubmit = (data) => {
   try {
     successMessage.value = "Работаем";
     errorMessage.value = "";
 
-    // Отправка данных на сервер через веб-сокет
-    socket.send(JSON.stringify(settingForMining.value));
+    socket.send(JSON.stringify(data));
   } catch (error) {
     console.error("Произошла ошибка:", error);
   }
@@ -601,32 +577,6 @@ socket.on("connect_error", (error) => {
   errorMessage.value = `Перейди в исходную точку в игре ${error}`;
   console.error("Ошибка сети:", error);
 });
-
-// const movement = () => {
-//   const data = {
-//     fleet: formForTransfer.fleet,
-//     fuelAtStartingPoint: formForTransfer.fuelAtStartingPoint,
-//     fuelAtDestination: formForTransfer.fuelAtDestination,
-//     resourceValueAtDestination: formForTransfer.resourceValueAtDestination,
-//     resourceValueAtStartingPoint: formForTransfer.resourceValueAtStartingPoint,
-//     loop: formForTransfer.loop,
-//     key: formForTransfer.key,
-//     resource: formForTransfer.resource,
-//     forwardCoordForWarp: formForTransfer.forwardCoordForWarp,
-//     forwardCoordForSubWarp: formForTransfer.forwardCoordForSubWarp,
-//     backCoordForWarp: formForTransfer.backCoordForWarp,
-//     backCoordForSubWarp: formForTransfer.backCoordForSubWarp,
-//   };
-//   try {
-//     successMessage.value = "Двигаемся";
-//     errorMessage.value = "";
-
-//     // Отправка данных на сервер через веб-сокет
-//     socket.emit("move", JSON.stringify(data));
-//   } catch (error) {
-//     console.error("Произошла ошибка:", error);
-//   }
-// };
 
 const movement = (dataForSending) => {
   const data = {
@@ -643,11 +593,10 @@ const movement = (dataForSending) => {
     backCoordForWarp: dataForSending.backCoordForWarp,
     backCoordForSubWarp: dataForSending.backCoordForSubWarp,
   };
+
   try {
     successMessage.value = "Двигаемся";
     errorMessage.value = "";
-
-    // Отправка данных на сервер через веб-сокет
     socket.emit("move", JSON.stringify(settingsForTransfer.value));
   } catch (error) {
     console.error("Произошла ошибка:", error);
