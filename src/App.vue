@@ -426,6 +426,7 @@ const resources = ref([
   "copper_ore",
   "magnet",
   "copper",
+  "graphene"
 ]);
 const form = reactive({
   loop: "",
