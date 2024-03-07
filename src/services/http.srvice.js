@@ -34,28 +34,29 @@ export class HttpClient {
     }
 
     async get(endpoint, params) {
-        // function authHeader() {
-        //     let user = JSON.parse(localStorage.getItem("user"))
-        //
-        //     if (user && user.token) {
-        //         return { Authorization: "Bearer " + user.token, "Content-Type": "application/json" }
-        //     } else {
-        //         const cookieToken = document.cookie
-        //             .split("; ")
-        //             .find((row) => row.startsWith("jwtToken="))
-        //             ?.split("=")[1]
-        //
-        //         if (cookieToken) {
-        //             return { Authorization: "Bearer " + cookieToken, "Content-Type": "application/json" }
-        //         } else {
-        //             return {}
-        //         }
-        //     }
-        // }
+        function authHeader() {
+            let user = JSON.parse(localStorage.getItem("user"))
+
+            if (user && user.token) {
+                return { Authorization: "Bearer " + user.token, "Content-Type": "application/json" }
+            } else {
+                const cookieToken = document.cookie
+                    .split("; ")
+                    .find((row) => row.startsWith("jwtToken="))
+                    ?.split("=")[1]
+
+                if (cookieToken) {
+                    return { Authorization: "Bearer " + cookieToken, "Content-Type": "application/json" }
+                } else {
+                    return {}
+                }
+            }
+        }
         const url = `${this.baseUrl}/${endpoint}`
         const options = {
             method: "GET",
             params: params,
+            headers: authHeader(),
         }
         console.log(options)
 
