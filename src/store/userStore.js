@@ -22,7 +22,7 @@ export const useUserStore = defineStore("users", {
             this.userKey = key
         },
         async setUserWalletPublicKey(data) {
-            const httpClient = new HttpClient("http://localhost:4040")
+            const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
                 const res = await httpClient.post("user/addWallet", data)
                 return res.user
@@ -31,7 +31,7 @@ export const useUserStore = defineStore("users", {
             }
         },
         async loadUserFleets(userKey) {
-            const httpClient = new HttpClient("http://localhost:4040")
+            const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
                 const res = await httpClient.get(`getAllFleet?key=${encodeURIComponent(userKey)}`)
                 console.log(res)
@@ -46,7 +46,7 @@ export const useUserStore = defineStore("users", {
             }
         },
         async loadResources(userKey) {
-            const httpClient = new HttpClient("http://localhost:4040")
+            const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
                 const res = await httpClient.get(`game/resources?key=${encodeURIComponent(userKey)}`)
 

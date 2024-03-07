@@ -14,7 +14,7 @@ export const useAuthStore = defineStore("auth", {
     },
     actions: {
         async login(data) {
-            const httpClient = new HttpClient("http://localhost:4040")
+            const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
                 const res = await httpClient.post("auth/login", data)
                 localStorage.setItem("user", JSON.stringify(res))
@@ -27,7 +27,7 @@ export const useAuthStore = defineStore("auth", {
             }
         },
         async registration(data) {
-            const httpClient = new HttpClient("http://localhost:4040")
+            const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
                 const res = await httpClient.post("auth/register", data)
                 localStorage.setItem("user", JSON.stringify(res))
@@ -40,7 +40,7 @@ export const useAuthStore = defineStore("auth", {
             }
         },
         async checkUser() {
-            const httpClient = new HttpClient("http://localhost:4040")
+            const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
                 const result = await httpClient.get("auth/me")
                 this.user = { ...result }
