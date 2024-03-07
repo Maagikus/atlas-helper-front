@@ -26,7 +26,8 @@
         <span v-if="authStore.errors[0]" class="text-danger">{{ authStore.errors[0] }}</span>
         <button :disabled="v$.$invalid" type="submit" class="btn btn-primary">Sign In</button>
         <router-link class="btn btn-primary" to="/registration">Sign Up</router-link>
-        <a href="http://localhost:4040/my-app/v1/auth/google"><i class="bi bi-google"></i>Sign in with Google</a>
+        <!--        <a href="http://localhost:4040/my-app/v1/auth/google"><i class="bi bi-google"></i>Sign in with Google</a>-->
+        <a href="https://staratlas-helper-98g9.onrender.com/my-app/v1/auth/google"><i class="bi bi-google"></i>Sign in with Google</a>
     </form>
 </template>
 

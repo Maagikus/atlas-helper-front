@@ -278,6 +278,7 @@
                     <div @click="movement(formForTransfer)" class="move">двигаться</div>
                 </form>
             </div>
+            <div class="move" @click="clearLocalStorage()">очистить хранилище</div>
             <div v-if="fleetData.length > 0" class="process">
                 <ProcessStatus v-for="item in fleetData" :fleet="item" @execute-movement="handleExecuteMovement(item)"></ProcessStatus>
             </div>
@@ -391,6 +392,9 @@ const handleExecuteMovement = (item) => {
     } else {
         movement([item.dataForRepeating])
     }
+}
+const clearLocalStorage = () => {
+    localStorage.setItem("fleetData", null)
 }
 
 onMounted(async () => {
