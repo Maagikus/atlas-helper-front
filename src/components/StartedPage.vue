@@ -12,6 +12,10 @@
                         <label for="loop">Количество итераций:</label>
                         <input v-model="form.loop" type="number" id="loop" name="loop" required />
                     </div>
+                    <div class="form__item">
+                        <label for="loop">Добавочная стоимость транзакции:</label>
+                        <input v-model="form.feeToTransaction" type="number" id="loop" name="loop" required />
+                    </div>
 
                     <!-- <div class="form__item">
               <label for="food">Количество еды:</label>
@@ -87,6 +91,19 @@
                             <div class="form-transport__item">
                                 <label for="" class="form-transport__label">Loops</label>
                                 <input v-model="formForTransfer.loop" id="" autocomplete="off" type="number" name="form[]" data-error="Ошибка" placeholder="" class="form-transport__input" />
+                            </div>
+                            <div class="form-transport__item">
+                                <label for="" class="form-transport__label">Добавочная стоимость транзакции</label>
+                                <input
+                                    v-model="formForTransfer.feeToTransaction"
+                                    id=""
+                                    autocomplete="off"
+                                    type="number"
+                                    name="form[]"
+                                    data-error="Ошибка"
+                                    placeholder=""
+                                    class="form-transport__input"
+                                />
                             </div>
                         </div>
                         <div class="form-transport__left">
@@ -309,6 +326,7 @@ const form = reactive({
     food: "",
     time: "",
     key: "",
+    feeToTransaction: 10000,
     resource: resources.value[0],
     fleet: fleets.value[0],
     planet: "",
@@ -316,6 +334,7 @@ const form = reactive({
 const formForTransfer = reactive({
     loop: "",
     key: "",
+    feeToTransaction: 10000,
     fleet: "",
     fillFuel: "",
     fillAmmo: "",
@@ -343,6 +362,7 @@ const setMiningSettings = (dataForMining) => {
     const data = {
         loop: dataForMining.loop,
         key: authStore.getUser.walletPublicKey,
+        priorityFee: dataForMining.feeToTransaction,
         resource: dataForMining.resource,
         fleet: dataForMining.fleet,
         planet: dataForMining.planet,
@@ -353,6 +373,7 @@ const setMiningSettings = (dataForMining) => {
 const setSettings = (dataForSending) => {
     const data = {
         fleet: dataForSending.fleet,
+        priorityFee: dataForMining.feeToTransaction,
         fuelAtStartingPoint: dataForSending.fuelAtStartingPoint,
         fuelAtDestination: dataForSending.fuelAtDestination,
         resourceValueAtDestination: dataForSending.resourceValueAtDestination,
