@@ -61,7 +61,7 @@ const onLogin = async (loginData) => {
     }
 }
 const onLoginwithGoogle = async () => {
-    const res = await fetch("https://staratlas-helper-98g9.onrender.com/my-app/v1/auth/google", { method: "POST" })
+    const res = await fetch("https://staratlas-helper-98g9.onrender.com/my-app/v1/auth/google")
     const data = await res.json()
     console.log(data)
 }
