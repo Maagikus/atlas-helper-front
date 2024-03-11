@@ -30,7 +30,7 @@ export const useAuthStore = defineStore("auth", {
         async registration(data) {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
-                const res = await httpClient.post("auth/register", data)
+                const res = await httpClient.post("auth/registration", data)
                 localStorage.setItem("token", JSON.stringify(res.accessToken))
                 this.isUserAuth = true
                 this.user = res.user
