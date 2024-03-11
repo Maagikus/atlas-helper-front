@@ -61,7 +61,15 @@ const onLogin = async (loginData) => {
     }
 }
 const onLoginwithGoogle = async () => {
-    const res = await fetch("https://staratlas-helper-98g9.onrender.com/my-app/v1/auth/google")
+    const res = await fetch("https://staratlas-helper-98g9.onrender.com/my-app/v1/auth/google", {
+        method: "GET",
+        credentials: "include",
+        headers: new Headers({
+            Accept: "application/json",
+            "Access-Control-Allow-Origin": `https://staratlas-helper-98g9.onrender.com`,
+            "Content-Type": "application/json",
+        }),
+    })
     const data = await res.json()
     console.log(data)
 }
