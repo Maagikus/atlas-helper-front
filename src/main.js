@@ -8,12 +8,16 @@ import router from "@/router.js"
 import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets"
 import "bootstrap/dist/css/bootstrap.css"
 import { createPinia } from "pinia"
+
 const walletOptions = {
     wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter({ network: WalletAdapterNetwork.Devnet })],
     autoConnect: true,
 }
-const app = createApp(App)
+
 const pinia = createPinia()
+
+const app = createApp(App)
+
 app.use(pinia)
 app.use(router)
 app.use(SolanaWallets, walletOptions)

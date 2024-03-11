@@ -35,21 +35,10 @@ export class HttpClient {
 
     async get(endpoint, params) {
         function authHeader() {
-            let user = JSON.parse(localStorage.getItem("user"))
+            let token = JSON.parse(localStorage.getItem("token"))
 
-            if (user && user.token) {
-                return { Authorization: "Bearer " + user.token, "Content-Type": "application/json" }
-            } else {
-                const cookieToken = document.cookie
-                    .split("; ")
-                    .find((row) => row.startsWith("jwtToken="))
-                    ?.split("=")[1]
-
-                if (cookieToken) {
-                    return { Authorization: "Bearer " + cookieToken, "Content-Type": "application/json" }
-                } else {
-                    return {}
-                }
+            if (token) {
+                return { Authorization: "Bearer " + token, "Content-Type": "application/json" }
             }
         }
         const url = `${this.baseUrl}/${endpoint}`

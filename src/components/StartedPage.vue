@@ -395,6 +395,8 @@ const handleExecuteMovement = (item) => {
 }
 const clearLocalStorage = () => {
     localStorage.setItem("fleetData", null)
+    settingForMining.value = []
+    settingsForTransfer.value = []
 }
 
 onMounted(async () => {

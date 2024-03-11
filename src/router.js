@@ -35,13 +35,16 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes,
 })
+
 router.beforeEach(async (to, from, next) => {
     const authStore = useAuthStore()
     await authStore.checkUser()
-
-    // eslint-disable-next-line no-constant-condition
     if (to.meta.isRequiredAuth && !authStore.isUser) {
         next({ name: "Login" })
-    } else next()
+    } else {
+        await authStore.checkUser()
+
+        next()
+    }
 })
 export default router
