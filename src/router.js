@@ -43,7 +43,6 @@ router.beforeEach(async (to, from, next) => {
         next({ name: "Login" })
     } else {
         await authStore.checkUser()
-
         next()
     }
 })

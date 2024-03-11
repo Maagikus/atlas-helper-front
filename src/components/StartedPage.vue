@@ -291,7 +291,7 @@ import "bootstrap/dist/css/bootstrap.css"
 import "bootstrap-vue/dist/bootstrap-vue.css"
 import { reactive, ref, onMounted, watchEffect, watch } from "vue"
 import ProcessStatus from "./ProcessStatus.vue"
-import { useCookies } from "vue3-cookies"
+
 import { socket } from "@/socket.js"
 import { useUserStore } from "@/store/userStore.js"
 import KeyModals from "@/components/modals/KeyModals.vue"
@@ -302,7 +302,7 @@ const authStore = useAuthStore()
 const fleets = ref([])
 const fleetData = ref([])
 const menuItem = ref(0)
-const { cookies } = useCookies()
+
 const resources = ref([])
 const form = reactive({
     loop: "",
