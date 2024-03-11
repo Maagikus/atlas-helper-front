@@ -25,7 +25,8 @@ export const useUserStore = defineStore("users", {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
                 const res = await httpClient.post("user/addWallet", data)
-                return res.user
+                console.log(res)
+                // return res.user
             } catch (e) {
                 console.log(e)
             }

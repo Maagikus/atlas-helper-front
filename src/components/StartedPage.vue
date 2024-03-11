@@ -485,6 +485,13 @@ onMounted(async () => {
         resources.value = userStore.getResources
     }
 })
+watchEffect(async () => {
+    const userKey = authStore.getUser.walletPublicKey
+    if (userKey) {
+        await userStore.loadResources(userKey)
+        resources.value = userStore.getResources
+    }
+})
 
 watchEffect(async () => {
     const userKey = authStore.getUser.walletPublicKey

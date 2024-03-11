@@ -31,7 +31,8 @@ const userStore = useUserStore()
 const authStore = useAuthStore()
 
 const setKey = async () => {
-    const data = { userId: useAuthStore().user._id, publicKey: key.value }
+    const data = { userId: useAuthStore().user.id, publicKey: key.value }
+    console.log(data)
     await userStore.setUserWalletPublicKey(data)
     await authStore.checkUser()
     userStore.setUserKey(key)
