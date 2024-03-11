@@ -27,7 +27,7 @@
         <button :disabled="v$.$invalid" type="submit" class="btn btn-primary">Sign In</button>
         <router-link class="btn btn-primary" to="/registration">Sign Up</router-link>
         <!--        <a href="http://localhost:4040/my-app/v1/auth/google"><i class="bi bi-google"></i>Sign in with Google</a>-->
-        <a @click="onLoginwithGoogle" href=""><i class="bi bi-google"></i>Sign in with Google</a>
+        <a @click="onLoginwithGoogle" href="#"><i class="bi bi-google"></i>Sign in with Google</a>
     </form>
 </template>
 
@@ -61,7 +61,7 @@ const onLogin = async (loginData) => {
     }
 }
 const onLoginwithGoogle = async () => {
-    const res = await fetch("https://staratlas-helper-98g9.onrender.com/my-app/v1/auth/google")
+    const res = await fetch("https://staratlas-helper-98g9.onrender.com/my-app/v1/auth/google", { method: "POST" })
     const data = await res.json()
     console.log(data)
 }
