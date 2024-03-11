@@ -24,6 +24,7 @@ export class HttpClient {
         Object.assign(requestOptions, options)
         console.log(requestOptions)
         const response = await fetch(url, requestOptions)
+        console.log(requestOptions)
         const responseData = await response.json()
 
         if (!response.ok) {
