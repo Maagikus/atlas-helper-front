@@ -1,86 +1,63 @@
 <template>
     <div class="container">
         <div class="wrapper">
-            <ul class="menu">
-                <li class="menu__item" @click="menuItem = 0" :class="{ active: menuItem === 0 }">Майнинг</li>
-                <li class="menu__item" @click="menuItem = 1" :class="{ active: menuItem === 1 }">Перевозки</li>
-            </ul>
-            <div v-if="menuItem === 0" class="mining-form">
-                <h2 class="mining-form__title">Mining</h2>
-                <form @submit.prevent="onSubmit(settingForMining)" id="myForm" class="form">
-                    <div class="form__item">
-                        <label for="loop">Количество итераций:</label>
-                        <input v-model="form.loop" type="number" id="loop" name="loop" required />
-                    </div>
-                    <div class="form__item">
-                        <label for="loop">Добавочная стоимость транзакции:</label>
-                        <input v-model="form.feeToTransaction" type="number" id="loop" name="loop" required />
-                    </div>
+            <div class="items">
+                <div class="forms">
+                    <ul class="menu">
+                        <li class="menu__item" @click="menuItem = 0" :class="{ active: menuItem === 0 }">Майнинг</li>
+                        <li class="menu__item" @click="menuItem = 1" :class="{ active: menuItem === 1 }">Перевозки</li>
+                    </ul>
+                    <div v-if="menuItem === 0" class="mining-form">
+                        <h2 class="mining-form__title">Mining</h2>
+                        <form @submit.prevent="onSubmit(settingForMining)" id="myForm" class="form">
+                            <div class="form__item">
+                                <label for="loop">Количество итераций:</label>
+                                <input v-model="form.loop" type="number" id="loop" name="loop" required />
+                            </div>
+                            <div class="form__item">
+                                <label for="loop">Добавочная стоимость транзакции:</label>
+                                <input v-model="form.feeToTransaction" type="number" id="loop" name="loop" required />
+                            </div>
 
-                    <!-- <div class="form__item">
-              <label for="food">Количество еды:</label>
-              <input
-                v-model="form.food"
-                type="number"
-                id="food"
-                name="food"
-                required
-              />
-            </div> -->
+                            <!-- <div class="form__item">
+                      <label for="food">Количество еды:</label>
+                      <input
+                        v-model="form.food"
+                        type="number"
+                        id="food"
+                        name="food"
+                        required
+                      />
+                    </div> -->
 
-                    <!-- <div class="form__item">
-              <label for="time">Время в минутах:</label>
-              <input
-                v-model="form.time"
-                type="number"
-                id="time"
-                name="time"
-                required
-              />
-            </div> -->
+                            <!-- <div class="form__item">
+                      <label for="time">Время в минутах:</label>
+                      <input
+                        v-model="form.time"
+                        type="number"
+                        id="time"
+                        name="time"
+                        required
+                      />
+                    </div> -->
 
-                    <div class="form__item">
-                        <label for="resource">Ресурс:</label>
-                        <select v-model="form.resource" id="resource" name="resource" required>
-                            <option v-for="resource in resources" :key="resource" :value="resource">
-                                {{ resource }}
-                            </option>
-                        </select>
-                    </div>
+                            <div class="form__item">
+                                <label for="resource">Ресурс:</label>
+                                <select v-model="form.resource" id="resource" name="resource" required>
+                                    <option v-for="resource in resources" :key="resource" :value="resource">
+                                        {{ resource }}
+                                    </option>
+                                </select>
+                            </div>
 
-                    <div class="form__item">
-                        <label for="planet">planet:</label>
-                        <input v-model="form.planet" type="text" id="planet" name="planet" required />
-                    </div>
+                            <div class="form__item">
+                                <label for="planet">planet:</label>
+                                <input v-model="form.planet" type="text" id="planet" name="planet" required />
+                            </div>
 
-                    <div class="form__item">
-                        <label for="fleet">Флот:</label>
-                        <select v-model="form.fleet" id="fleet" name="fleet" required>
-                            <option disabled value="">Выберите флот</option>
-                            <option v-for="(fleet, index) in fleets" :key="index" :value="fleet">
-                                {{ fleet }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="error-message" v-if="errorMessage">
-                        {{ errorMessage }}
-                    </div>
-                    <div class="success-message" v-if="successMessage">
-                        {{ successMessage }}
-                    </div>
-                    <div class="move" @click="setMiningSettings(form)">set settings</div>
-                    <button type="submit">Отправить</button>
-                </form>
-            </div>
-            <div v-if="menuItem === 1" class="transport-form">
-                <form class="transport-form form-transport">
-                    <div class="form-transport__wrapper">
-                        <div class="form-transport__general">
-                            <h2 class="form-transport__title">General Settings</h2>
                             <div class="form__item">
                                 <label for="fleet">Флот:</label>
-                                <select v-model="formForTransfer.fleet" id="fleet" name="fleet" required>
+                                <select v-model="form.fleet" id="fleet" name="fleet" required>
                                     <option disabled value="">Выберите флот</option>
                                     <option v-for="(fleet, index) in fleets" :key="index" :value="fleet">
                                         {{ fleet }}
@@ -88,214 +65,245 @@
                                 </select>
                             </div>
 
-                            <div class="form-transport__item">
-                                <label for="" class="form-transport__label">Loops</label>
-                                <input v-model="formForTransfer.loop" id="" autocomplete="off" type="number" name="form[]" data-error="Ошибка" placeholder="" class="form-transport__input" />
+                            <div class="error-message" v-if="errorMessage">
+                                {{ errorMessage }}
                             </div>
-                            <div class="form-transport__item">
-                                <label for="" class="form-transport__label">Добавочная стоимость транзакции</label>
-                                <input
-                                    v-model="formForTransfer.feeToTransaction"
-                                    id=""
-                                    autocomplete="off"
-                                    type="number"
-                                    name="form[]"
-                                    data-error="Ошибка"
-                                    placeholder=""
-                                    class="form-transport__input"
-                                />
+                            <div class="success-message" v-if="successMessage">
+                                {{ successMessage }}
                             </div>
-                        </div>
-                        <div class="form-transport__left">
-                            <h2 class="form-transport__title">From</h2>
+                            <div class="move" @click="setMiningSettings(form)">set settings</div>
+                            <button type="submit">Отправить</button>
+                        </form>
+                    </div>
+                    <div v-if="menuItem === 1" class="transport-form">
+                        <form class="transport-form form-transport">
+                            <div class="form-transport__wrapper">
+                                <div class="form-transport__general">
+                                    <h2 class="form-transport__title">General Settings</h2>
+                                    <div class="form__item">
+                                        <label for="fleet">Флот:</label>
+                                        <select v-model="formForTransfer.fleet" id="fleet" name="fleet" required>
+                                            <option disabled value="">Выберите флот</option>
+                                            <option v-for="(fleet, index) in fleets" :key="index" :value="fleet">
+                                                {{ fleet }}
+                                            </option>
+                                        </select>
+                                    </div>
 
-                            <!-- <div class="form-transport__item">
-                  <label for="" class="form-transport__label">Food</label>
-                  <input
-                    v-model="formForTransfer.depositFood"
-                    id=""
-                    autocomplete="off"
-                    type="number"
-                    name="form[]"
-                    data-error="Ошибка"
-                    placeholder=""
-                    class="form-transport__input"
-                  />
-                </div> -->
-                            <div class="form-transport__item">
-                                <label for="" class="form-transport__label">Fuel</label>
-                                <input
-                                    v-model="formForTransfer.fuelAtStartingPoint"
-                                    id=""
-                                    autocomplete="off"
-                                    type="number"
-                                    name="form[]"
-                                    data-error="Ошибка"
-                                    placeholder=""
-                                    class="form-transport__input"
-                                />
-                            </div>
-                            <!-- <div class="form-transport__item">
-                  <label for="" class="form-transport__label">Ammo</label>
-                  <input
-                    v-model="formForTransfer.depositAmmo"
-                    id=""
-                    autocomplete="off"
-                    type="number"
-                    name="form[]"
-                    data-error="Ошибка"
-                    placeholder=""
-                    class="form-transport__input"
-                  />
-                </div> -->
-                            <div class="form__item select">
-                                <label for="resource">Ресурс:</label>
-                                <div class="select__wrap">
-                                    <select v-model="formForTransfer.resource" id="resource" name="resource" required>
-                                        <option v-for="resource in resources" :key="resource" :value="resource">
-                                            {{ resource }}
-                                        </option>
-                                    </select>
-                                    <input
-                                        v-model="formForTransfer.resourceValueAtStartingPoint"
-                                        id=""
-                                        autocomplete="off"
-                                        type="number"
-                                        name="form[]"
-                                        data-error="Ошибка"
-                                        placeholder=""
-                                        class="select__input"
-                                    />
+                                    <div class="form-transport__item">
+                                        <label for="" class="form-transport__label">Loops</label>
+                                        <input v-model="formForTransfer.loop" id="" autocomplete="off" type="number" name="form[]" data-error="Ошибка" placeholder="" class="form-transport__input" />
+                                    </div>
+                                    <div class="form-transport__item">
+                                        <label for="" class="form-transport__label">Добавочная стоимость транзакции</label>
+                                        <input
+                                            v-model="formForTransfer.feeToTransaction"
+                                            id=""
+                                            autocomplete="off"
+                                            type="number"
+                                            name="form[]"
+                                            data-error="Ошибка"
+                                            placeholder=""
+                                            class="form-transport__input"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="form-transport__left">
+                                    <h2 class="form-transport__title">From</h2>
+
+                                    <!-- <div class="form-transport__item">
+                          <label for="" class="form-transport__label">Food</label>
+                          <input
+                            v-model="formForTransfer.depositFood"
+                            id=""
+                            autocomplete="off"
+                            type="number"
+                            name="form[]"
+                            data-error="Ошибка"
+                            placeholder=""
+                            class="form-transport__input"
+                          />
+                        </div> -->
+                                    <div class="form-transport__item">
+                                        <label for="" class="form-transport__label">Fuel</label>
+                                        <input
+                                            v-model="formForTransfer.fuelAtStartingPoint"
+                                            id=""
+                                            autocomplete="off"
+                                            type="number"
+                                            name="form[]"
+                                            data-error="Ошибка"
+                                            placeholder=""
+                                            class="form-transport__input"
+                                        />
+                                    </div>
+                                    <!-- <div class="form-transport__item">
+                          <label for="" class="form-transport__label">Ammo</label>
+                          <input
+                            v-model="formForTransfer.depositAmmo"
+                            id=""
+                            autocomplete="off"
+                            type="number"
+                            name="form[]"
+                            data-error="Ошибка"
+                            placeholder=""
+                            class="form-transport__input"
+                          />
+                        </div> -->
+                                    <div class="form__item select">
+                                        <label for="resource">Ресурс:</label>
+                                        <div class="select__wrap">
+                                            <select v-model="formForTransfer.resource" id="resource" name="resource" required>
+                                                <option v-for="resource in resources" :key="resource" :value="resource">
+                                                    {{ resource }}
+                                                </option>
+                                            </select>
+                                            <input
+                                                v-model="formForTransfer.resourceValueAtStartingPoint"
+                                                id=""
+                                                autocomplete="off"
+                                                type="number"
+                                                name="form[]"
+                                                data-error="Ошибка"
+                                                placeholder=""
+                                                class="select__input"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-transport__item">
+                                        <label for="" class="form-transport__label">Координаты warp вперед</label>
+                                        <input
+                                            v-model="formForTransfer.forwardCoordForWarp"
+                                            id=""
+                                            autocomplete="off"
+                                            type="text"
+                                            name="form[]"
+                                            data-error="Ошибка"
+                                            placeholder="2 -34"
+                                            class="form-transport__input"
+                                        />
+                                    </div>
+                                    <div class="form-transport__item">
+                                        <label for="" class="form-transport__label">Координаты subWarp вперед</label>
+                                        <input
+                                            v-model="formForTransfer.forwardCoordForSubWarp"
+                                            id=""
+                                            autocomplete="off"
+                                            type="text"
+                                            name="form[]"
+                                            data-error="Ошибка"
+                                            placeholder="2 -34"
+                                            class="form-transport__input"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="form-transport__right">
+                                    <h2 class="form-transport__title">To</h2>
+                                    <!-- <div class="form-transport__item">
+                          <label for="" class="form-transport__label">Food</label>
+                          <input
+                            v-model="formForTransfer.withdrawFood"
+                            id=""
+                            autocomplete="off"
+                            type="number"
+                            name="form[]"
+                            data-error="Ошибка"
+                            placeholder=""
+                            class="form-transport__input"
+                          />
+                        </div> -->
+                                    <div class="form-transport__item">
+                                        <label for="" class="form-transport__label">Fuel</label>
+                                        <input
+                                            v-model="formForTransfer.fuelAtDestination"
+                                            id=""
+                                            autocomplete="off"
+                                            type="number"
+                                            name="form[]"
+                                            data-error="Ошибка"
+                                            placeholder=""
+                                            class="form-transport__input"
+                                        />
+                                    </div>
+                                    <!-- <div class="form-transport__item">
+                          <label for="" class="form-transport__label">Ammo</label>
+                          <input
+                            v-model="formForTransfer.withdrawAmmo"
+                            id=""
+                            autocomplete="off"
+                            type="number"
+                            name="form[]"
+                            data-error="Ошибка"
+                            placeholder=""
+                            class="form-transport__input"
+                          />
+                        </div> -->
+                                    <div class="form__item select">
+                                        <label for="resource">Ресурс:</label>
+                                        <div class="select__wrap">
+                                            <select v-model="formForTransfer.resource" id="resource" name="resource" required>
+                                                <option v-for="resource in resources" :key="resource" :value="resource">
+                                                    {{ resource }}
+                                                </option>
+                                            </select>
+                                            <input
+                                                v-model="formForTransfer.resourceValueAtDestination"
+                                                id=""
+                                                autocomplete="off"
+                                                type="number"
+                                                name="form[]"
+                                                data-error="Ошибка"
+                                                placeholder="666"
+                                                class="select__input"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="form-transport__item">
+                                        <label for="" class="form-transport__label">Координаты warp</label>
+                                        <input
+                                            v-model="formForTransfer.backCoordForWarp"
+                                            id=""
+                                            autocomplete="off"
+                                            type="text"
+                                            name="form[]"
+                                            data-error="Ошибка"
+                                            placeholder="2 -34"
+                                            class="form-transport__input"
+                                        />
+                                    </div>
+                                    <div class="form-transport__item">
+                                        <label for="" class="form-transport__label">Координаты subWarp</label>
+                                        <input
+                                            v-model="formForTransfer.backCoordForSubWarp"
+                                            id=""
+                                            autocomplete="off"
+                                            type="text"
+                                            name="form[]"
+                                            data-error="Ошибка"
+                                            placeholder="2 -34"
+                                            class="form-transport__input"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="form-transport__item">
-                                <label for="" class="form-transport__label">Координаты warp вперед</label>
-                                <input
-                                    v-model="formForTransfer.forwardCoordForWarp"
-                                    id=""
-                                    autocomplete="off"
-                                    type="text"
-                                    name="form[]"
-                                    data-error="Ошибка"
-                                    placeholder="2 -34"
-                                    class="form-transport__input"
-                                />
+                            <div class="error-message" v-if="errorMessage">
+                                {{ errorMessage }}
                             </div>
-                            <div class="form-transport__item">
-                                <label for="" class="form-transport__label">Координаты subWarp вперед</label>
-                                <input
-                                    v-model="formForTransfer.forwardCoordForSubWarp"
-                                    id=""
-                                    autocomplete="off"
-                                    type="text"
-                                    name="form[]"
-                                    data-error="Ошибка"
-                                    placeholder="2 -34"
-                                    class="form-transport__input"
-                                />
+                            <div class="success-message" v-if="successMessage">
+                                {{ successMessage }}
                             </div>
-                        </div>
-                        <div class="form-transport__right">
-                            <h2 class="form-transport__title">To</h2>
-                            <!-- <div class="form-transport__item">
-                  <label for="" class="form-transport__label">Food</label>
-                  <input
-                    v-model="formForTransfer.withdrawFood"
-                    id=""
-                    autocomplete="off"
-                    type="number"
-                    name="form[]"
-                    data-error="Ошибка"
-                    placeholder=""
-                    class="form-transport__input"
-                  />
-                </div> -->
-                            <div class="form-transport__item">
-                                <label for="" class="form-transport__label">Fuel</label>
-                                <input
-                                    v-model="formForTransfer.fuelAtDestination"
-                                    id=""
-                                    autocomplete="off"
-                                    type="number"
-                                    name="form[]"
-                                    data-error="Ошибка"
-                                    placeholder=""
-                                    class="form-transport__input"
-                                />
-                            </div>
-                            <!-- <div class="form-transport__item">
-                  <label for="" class="form-transport__label">Ammo</label>
-                  <input
-                    v-model="formForTransfer.withdrawAmmo"
-                    id=""
-                    autocomplete="off"
-                    type="number"
-                    name="form[]"
-                    data-error="Ошибка"
-                    placeholder=""
-                    class="form-transport__input"
-                  />
-                </div> -->
-                            <div class="form__item select">
-                                <label for="resource">Ресурс:</label>
-                                <div class="select__wrap">
-                                    <select v-model="formForTransfer.resource" id="resource" name="resource" required>
-                                        <option v-for="resource in resources" :key="resource" :value="resource">
-                                            {{ resource }}
-                                        </option>
-                                    </select>
-                                    <input
-                                        v-model="formForTransfer.resourceValueAtDestination"
-                                        id=""
-                                        autocomplete="off"
-                                        type="number"
-                                        name="form[]"
-                                        data-error="Ошибка"
-                                        placeholder="666"
-                                        class="select__input"
-                                    />
-                                </div>
-                            </div>
-                            <div class="form-transport__item">
-                                <label for="" class="form-transport__label">Координаты warp</label>
-                                <input
-                                    v-model="formForTransfer.backCoordForWarp"
-                                    id=""
-                                    autocomplete="off"
-                                    type="text"
-                                    name="form[]"
-                                    data-error="Ошибка"
-                                    placeholder="2 -34"
-                                    class="form-transport__input"
-                                />
-                            </div>
-                            <div class="form-transport__item">
-                                <label for="" class="form-transport__label">Координаты subWarp</label>
-                                <input
-                                    v-model="formForTransfer.backCoordForSubWarp"
-                                    id=""
-                                    autocomplete="off"
-                                    type="text"
-                                    name="form[]"
-                                    data-error="Ошибка"
-                                    placeholder="2 -34"
-                                    class="form-transport__input"
-                                />
-                            </div>
-                        </div>
+                            <div class="move" @click="setSettings(formForTransfer)">set movement settings</div>
+                            <div @click="movement(formForTransfer)" class="move">двигаться</div>
+                        </form>
                     </div>
-                    <div class="error-message" v-if="errorMessage">
-                        {{ errorMessage }}
-                    </div>
-                    <div class="success-message" v-if="successMessage">
-                        {{ successMessage }}
-                    </div>
-                    <div class="move" @click="setSettings(formForTransfer)">set movement settings</div>
-                    <div @click="movement(formForTransfer)" class="move">двигаться</div>
-                </form>
+                    <div class="move" @click="clearLocalStorage()">очистить хранилище</div>
+                </div>
+                <!--                <div class="chat">-->
+                <!--                    <Chat></Chat>-->
+                <!--                </div>-->
             </div>
-            <div class="move" @click="clearLocalStorage()">очистить хранилище</div>
+
             <div v-if="fleetData.length > 0" class="process">
                 <ProcessStatus v-for="item in fleetData" :fleet="item" @execute-movement="handleExecuteMovement(item)"></ProcessStatus>
             </div>
@@ -313,6 +321,7 @@ import { socket } from "@/socket.js"
 import { useUserStore } from "@/store/userStore.js"
 import KeyModals from "@/components/modals/KeyModals.vue"
 import { useAuthStore } from "@/store/authStore.js"
+// import Chat from "@/components/AI/Chat.vue"
 
 const userStore = useUserStore()
 const authStore = useAuthStore()
@@ -373,7 +382,7 @@ const setMiningSettings = (dataForMining) => {
 const setSettings = (dataForSending) => {
     const data = {
         fleet: dataForSending.fleet,
-        priorityFee: dataForMining.feeToTransaction,
+        priorityFee: dataForSending.feeToTransaction,
         fuelAtStartingPoint: dataForSending.fuelAtStartingPoint,
         fuelAtDestination: dataForSending.fuelAtDestination,
         resourceValueAtDestination: dataForSending.resourceValueAtDestination,
@@ -554,22 +563,22 @@ body {
 }
 @media screen and (max-width: 1200px) {
     .wrapper {
-        padding-left: 150px;
-        padding-right: 150px;
+        //padding-left: 150px;
+        //padding-right: 150px;
     }
 }
 
 @media screen and (max-width: 992px) {
     .wrapper {
-        padding-left: 100px;
-        padding-right: 100px;
+        //padding-left: 100px;
+        //padding-right: 100px;
     }
 }
 
 @media screen and (max-width: 768px) {
     .wrapper {
-        padding-left: 15px;
-        padding-right: 15px;
+        //padding-left: 15px;
+        //padding-right: 15px;
     }
 }
 form {
@@ -699,5 +708,14 @@ button:hover {
 .forSanuya img {
     width: 20%;
     height: 500%;
+}
+.items {
+    display: flex;
+    gap: 20px;
+}
+@media screen and (max-width: 768px) {
+    .items {
+        flex-direction: column-reverse;
+    }
 }
 </style>
