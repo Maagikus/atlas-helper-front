@@ -299,9 +299,9 @@
                     </div>
                     <div class="move" @click="clearLocalStorage()">очистить хранилище</div>
                 </div>
-                <!--                <div class="chat">-->
-                <!--                    <Chat></Chat>-->
-                <!--                </div>-->
+                <div class="chat">
+                    <Chat></Chat>
+                </div>
             </div>
 
             <div v-if="fleetData.length > 0" class="process">
@@ -321,7 +321,7 @@ import { socket } from "@/socket.js"
 import { useUserStore } from "@/store/userStore.js"
 import KeyModals from "@/components/modals/KeyModals.vue"
 import { useAuthStore } from "@/store/authStore.js"
-// import Chat from "@/components/AI/Chat.vue"
+import Chat from "@/components/AI/Chat.vue"
 
 const userStore = useUserStore()
 const authStore = useAuthStore()
@@ -712,6 +712,12 @@ button:hover {
 .items {
     display: flex;
     gap: 20px;
+}
+.chat {
+    flex: 0 1 30%;
+}
+.forms {
+    flex: 1 0 auto;
 }
 @media screen and (max-width: 768px) {
     .items {
