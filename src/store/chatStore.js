@@ -15,8 +15,15 @@ export const useChatStore = defineStore("chat", {
         initSocketListeners() {
             socket.on("ask", (mess) => {
                 const data = JSON.parse(mess)
-                console.log(data)
-                this.messages.push(data)
+                if(data.content.instructions){
+                    const dataForSending = {...data.content.instructions,key: useAuthStore().getUser.walletPublicKey}
+                    socket.emit("message", JSON.stringify([dataForSending]))
+
+                }
+                // const { process, ...otherData } = JSON.parse(data.content)
+                // console.log(otherData)
+                // console.log(data)
+                this.messages.push({content:data.content.mess,isAssistant: true})
             })
         },
         async getAllMessages(id) {

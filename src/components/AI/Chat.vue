@@ -281,4 +281,8 @@ watchEffect(async () => {
     display: flex;
     gap: 15px;
 }
+.message{
+    white-space: pre-wrap;
+    width: 300px;
+}
 </style>
