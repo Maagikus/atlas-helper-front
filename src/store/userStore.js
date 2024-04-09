@@ -24,7 +24,7 @@ export const useUserStore = defineStore("users", {
         async setUserWalletPublicKey(data) {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
-                const res = await httpClient.post("user/addWallet", data)
+                const res = await httpClient.post("auth/addWallet", data)
                 console.log(res)
                 // return res.user
             } catch (e) {
@@ -34,14 +34,9 @@ export const useUserStore = defineStore("users", {
         async loadUserFleets(userKey) {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
-                const res = await httpClient.get(`getAllFleet?key=${encodeURIComponent(userKey)}`)
+                const res = await httpClient.get(`game/getAllFleet?key=${encodeURIComponent(userKey)}`)
                 console.log(res)
-                // // const response = await fetch(`https://staratlas-helper-98g9.onrender.com/getAllFleet?key=${encodeURIComponent(userKey)}`)
-                // if (!res.ok) {
-                //     throw new Error("Ошибка при загрузке списка флотов")
-                // }
-                console.log(res)
-                this.userFleets = [...res.planets]
+                this.userFleets = [...res.fleets]
             } catch (error) {
                 console.error(error)
             }
@@ -50,7 +45,6 @@ export const useUserStore = defineStore("users", {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
                 const res = await httpClient.get(`game/resources?key=${encodeURIComponent(userKey)}`)
-
                 this.resources = [...res.resources]
             } catch (error) {
                 console.error(error)
