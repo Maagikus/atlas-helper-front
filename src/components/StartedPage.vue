@@ -1,6 +1,10 @@
 <template>
     <div class="container">
         <div class="wrapper">
+            <!-- <div @click="undock" class="btn btn-primary">undock</div>
+            <div @click="dock" class="btn btn-primary">dock</div>
+            <div @click="warp" class="btn btn-primary">warp</div> -->
+            <GameControl></GameControl>
             <div class="items">
                 <div class="forms">
                     <ul class="menu">
@@ -320,8 +324,10 @@ import ProcessStatus from "./ProcessStatus.vue"
 import { socket } from "@/socket.js"
 import { useUserStore } from "@/store/userStore.js"
 import KeyModals from "@/components/modals/KeyModals.vue"
+import GameControl from "@/components/GameControl.vue"
 import { useAuthStore } from "@/store/authStore.js"
 import Chat from "@/components/AI/Chat.vue"
+import { useGameStore } from "@/store/gameStore"
 
 const userStore = useUserStore()
 const authStore = useAuthStore()
@@ -400,19 +406,6 @@ const setSettings = (dataForSending) => {
 }
 const errorMessage = ref("")
 const successMessage = ref("")
-// const loadFleets = async (userKey) => {
-//     try {
-//         const response = await fetch(`https://staratlas-helper-98g9.onrender.com/getAllFleet?key=${encodeURIComponent(userKey)}`)
-//         if (!response.ok) {
-//             throw new Error("Ошибка при загрузке списка флотов")
-//         }
-//         const data = await response.json()
-//
-//         fleets.value = [...data.planets]
-//     } catch (error) {
-//         console.error(error)
-//     }
-// }
 
 const handleExecuteMovement = (item) => {
     console.log("Item program:", item.program)
@@ -501,6 +494,7 @@ const movement = (dataForSending) => {
         console.error("Произошла ошибка:", error)
     }
 }
+
 onMounted(async () => {
     const userKey = authStore.getUser.walletPublicKey
     if (userKey) {
