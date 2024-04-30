@@ -12,9 +12,11 @@ import { useAuthStore } from "@/store/authStore.js"
 import KeyModals from "@/components/modals/KeyModals.vue"
 import Header from "@/components/Header.vue"
 import { useUserStore } from "@/store/userStore.js"
+import { useGameStore } from "./store/gameStore"
 // import { useUserStore } from "@/store/userStore.js"
 const authStore = useAuthStore()
 const userStore = useUserStore()
+
 onBeforeMount(async () => {
     if (localStorage.getItem("token")) await authStore.checkUser()
 })

@@ -16,7 +16,6 @@
         </ul>
         <div @click="executeMovement" class="move">двигаться</div>
     </div>
-    <h2>status</h2>
 </template>
 <script setup props="props">
 import { onMounted, ref } from "vue"

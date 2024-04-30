@@ -9,7 +9,7 @@
 </template>
 <script setup>
 import { useAuthStore } from "@/store/authStore.js"
-import { ref, watchEffect } from "vue"
+import { ref, watchEffect, watch } from "vue"
 import router from "@/router.js"
 
 const authStore = useAuthStore()
@@ -23,8 +23,10 @@ const logout = () => {
 //     console.log(authStore.isUserAuth)
 //     isUser.value = authStore.isUser
 // })
-watchEffect(() => {
-    const authStore = useAuthStore()
-    isUser.value = authStore.isUser
-})
+watch(
+    () => authStore.isUser,
+    (newValue) => {
+        isUser.value = newValue
+    }
+)
 </script>

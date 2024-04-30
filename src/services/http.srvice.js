@@ -48,7 +48,6 @@ export class HttpClient {
             params: params,
             headers: authHeader(),
         }
-        console.log(options)
 
         return this.request(url, options)
     }

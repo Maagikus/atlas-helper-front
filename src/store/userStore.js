@@ -21,6 +21,11 @@ export const useUserStore = defineStore("users", {
         setUserKey(key) {
             this.userKey = key
         },
+        updateFleetState(fleetName, state) {
+            const index = this.userFleets.findIndex((i) => i.fleetName === fleetName)
+            console.log("fleetName", fleetName, "State", state)
+            if (index != -1) this.userFleets[index].fleetState = state
+        },
         async setUserWalletPublicKey(data) {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
@@ -36,6 +41,10 @@ export const useUserStore = defineStore("users", {
             try {
                 const res = await httpClient.get(`game/getAllFleet?key=${encodeURIComponent(userKey)}`)
                 console.log(res)
+                //  res.fleets.forEach((element) => {
+                //      console.log("element", element)
+                //      this.userFleets.push(element.fleetName)
+                //  })
                 this.userFleets = [...res.fleets]
             } catch (error) {
                 console.error(error)

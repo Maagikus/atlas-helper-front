@@ -1,10 +1,11 @@
 <template>
     <div class="container">
+        <Fleets :fleets="fleets"></Fleets>
         <div class="wrapper">
             <!-- <div @click="undock" class="btn btn-primary">undock</div>
             <div @click="dock" class="btn btn-primary">dock</div>
             <div @click="warp" class="btn btn-primary">warp</div> -->
-            <GameControl></GameControl>
+            <GameControl :fleets="fleets"></GameControl>
             <div class="items">
                 <div class="forms">
                     <ul class="menu">
@@ -63,8 +64,8 @@
                                 <label for="fleet">Флот:</label>
                                 <select v-model="form.fleet" id="fleet" name="fleet" required>
                                     <option disabled value="">Выберите флот</option>
-                                    <option v-for="(fleet, index) in fleets" :key="index" :value="fleet">
-                                        {{ fleet }}
+                                    <option v-for="({ fleetName }, index) in fleets" :key="index" :value="fleetName">
+                                        {{ fleetName }}
                                     </option>
                                 </select>
                             </div>
@@ -88,8 +89,8 @@
                                         <label for="fleet">Флот:</label>
                                         <select v-model="formForTransfer.fleet" id="fleet" name="fleet" required>
                                             <option disabled value="">Выберите флот</option>
-                                            <option v-for="(fleet, index) in fleets" :key="index" :value="fleet">
-                                                {{ fleet }}
+                                            <option v-for="({ fleetName }, index) in fleets" :key="index" :value="fleetName">
+                                                {{ fleetName }}
                                             </option>
                                         </select>
                                     </div>
@@ -151,7 +152,7 @@
                             name="form[]"
                             data-error="Ошибка"
                             placeholder=""
-                            class="form-transport__input"
+                            class="form-transport__input" 
                           />
                         </div> -->
                                     <div class="form__item select">
@@ -309,6 +310,7 @@
             </div>
 
             <div v-if="fleetData.length > 0" class="process">
+                <h2>status</h2>
                 <ProcessStatus v-for="item in fleetData" :fleet="item" @execute-movement="handleExecuteMovement(item)"></ProcessStatus>
             </div>
         </div>
@@ -320,6 +322,7 @@ import "bootstrap/dist/css/bootstrap.css"
 import "bootstrap-vue/dist/bootstrap-vue.css"
 import { reactive, ref, onMounted, watchEffect, watch } from "vue"
 import ProcessStatus from "./ProcessStatus.vue"
+import Fleets from "./Fleets.vue"
 
 import { socket } from "@/socket.js"
 import { useUserStore } from "@/store/userStore.js"
@@ -509,21 +512,32 @@ onMounted(async () => {
         resources.value = userStore.getResources
     }
 })
-watchEffect(async () => {
-    const userKey = authStore.getUser.walletPublicKey
-    if (userKey) {
-        await userStore.loadResources(userKey)
-        resources.value = userStore.getResources
+watch(
+    () => authStore.getUser.walletPublicKey,
+    async (userKey) => {
+        if (userKey) {
+            await userStore.loadResources(userKey)
+            resources.value = userStore.getResources
+        }
     }
-})
+)
 
-watchEffect(async () => {
-    const userKey = authStore.getUser.walletPublicKey
-    if (userKey) {
+watch(
+    () => authStore.getUser.walletPublicKey,
+    async (userKey) => {
+        if (userKey) {
+            await userStore.loadUserFleets(userKey)
+            fleets.value = userStore.getUserFleets
+        }
+    }
+)
+watch(
+    () => userStore.getUserFleets,
+    async () => {
         await userStore.loadUserFleets(userKey)
         fleets.value = userStore.getUserFleets
     }
-})
+)
 </script>
 
 <style scoped>
