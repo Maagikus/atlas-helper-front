@@ -531,13 +531,14 @@ watch(
         }
     }
 )
-watch(
-    () => userStore.getUserFleets,
-    async () => {
-        await userStore.loadUserFleets(userKey)
-        fleets.value = userStore.getUserFleets
-    }
-)
+// watch(
+//     () => userStore.getUserFleets,
+//     async () => {
+//         const userKey = authStore.getUser.walletPublicKey
+//         await userStore.loadUserFleets(userKey)
+//         fleets.value = userStore.getUserFleets
+//     }
+// )
 </script>
 
 <style scoped>

@@ -1,4 +1,4 @@
-import "./assets/main.css"
+// import "./assets/styles/style.scss"
 import { createApp } from "vue"
 import App from "./App.vue"
 import SolanaWallets from "solana-wallets-vue"
@@ -10,7 +10,7 @@ import "bootstrap/dist/css/bootstrap.css"
 import { createPinia } from "pinia"
 
 const walletOptions = {
-    wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter({ network: WalletAdapterNetwork.Devnet })],
+    wallets: [new SolflareWalletAdapter({ network: WalletAdapterNetwork.Mainnet })],
     autoConnect: true,
 }
 
