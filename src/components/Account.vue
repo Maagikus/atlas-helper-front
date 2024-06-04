@@ -1,2 +1,2 @@
-<template><p>Account</p></template>
+<template><p>Account plus</p></template>
 <script setup></script>
