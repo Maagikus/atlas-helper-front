@@ -1,0 +1,62 @@
+.pagination {
+	display: flex;
+	align-items: center;
+
+
+	&__list {
+		flex: 1 1 auto;
+		display: flex;
+		justify-content: center;
+		@include adaptiveValue("gap", 12, 6);
+	}
+
+	&__arrow {
+		cursor: pointer;
+
+		&::before {
+			font-size: rem(25);
+			color: #828282;
+
+		}
+	}
+
+	&__arrow-right {}
+
+	&__arrow-left {
+		transform: rotate(-180deg);
+	}
+
+	&__item {
+		cursor: pointer;
+		font-weight: 400;
+		@include adaptiveValue("font-size", 20, 16);
+		line-height: math.div(20, 23);
+		width: 31px;
+		height: 31px;
+		border-radius: 50%;
+		background-color: transparent;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.3s ease 0s;
+
+		@media (max-width:$mobile) {
+			width: 20px;
+			height: 20px;
+		}
+
+		&.active {
+			color: #fff;
+			background: rgb(79, 170, 255);
+		}
+
+		@media (any-hover: hover) {
+			&:hover {
+				color: #fff;
+				background: rgb(79, 170, 255);
+			}
+		}
+
+	}
+
+}

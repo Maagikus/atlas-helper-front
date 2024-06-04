@@ -50,6 +50,27 @@ export const useUserStore = defineStore("users", {
                 console.error(error)
             }
         },
+        async loadFleetsHistory() {
+            const userId = useAuthStore().getUser.id
+            const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
+            try {
+                const history = await httpClient.get(`game/history/${userId}/fleetHistory`)
+                return history
+            } catch (error) {
+                console.error(error)
+            }
+        },
+        async loadFleetsHistoryByFleetId(fleetName) {
+            const { fleetKey } = this.userFleets.find((i) => i.fleetName === fleetName)
+            const userId = useAuthStore().getUser.id
+            const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
+            try {
+                const history = await httpClient.get(`game/history/${userId}/fleetHistory/${fleetKey}`)
+                return history
+            } catch (error) {
+                console.error(error)
+            }
+        },
         async loadResources(userKey) {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {

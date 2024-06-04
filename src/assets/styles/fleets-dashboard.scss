@@ -1,0 +1,282 @@
+.fleest {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+	gap: rem(28);
+
+	// .fleest__header
+	&__header {}
+
+	// .fleest__body
+	&__body {
+		display: flex;
+		flex-direction: column;
+		gap: rem(28);
+	}
+
+	// .fleest__list
+	&__list {
+		display: flex;
+		flex-direction: column;
+		@include adaptiveValue("gap", 18, 10);
+	}
+
+	// .fleest__item
+
+	&__item {
+		// padding: 20px 22px 20px 61px;
+		@include adaptiveValue("padding-left", 61, 10);
+		@include adaptiveValue("padding-right", 22, 10);
+		@include adaptiveValue("padding-top", 20, 10);
+		@include adaptiveValue("padding-bottom", 20, 10);
+
+		@media (max-width: em(1415)) {
+			@include adaptiveValue("padding-left", 15, 10);
+			@include adaptiveValue("padding-right", 15, 10);
+			@include adaptiveValue("padding-top", 15, 10);
+			@include adaptiveValue("padding-bottom", 15, 10);
+			// flex-direction: column;
+		}
+
+		@media (max-width: em(1355)) {
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+
+		border: 2px solid rgb(79, 170, 255);
+		border-radius: 10px;
+		background: rgb(255, 255, 255);
+		display: flex;
+		// gap: rem(148);
+	}
+}
+
+.filter-tooltip {
+	top: 20px;
+	left: -75px;
+	// opacity: 1;
+	// visibility: visible;
+	// width: 168px;
+}
+
+.checkbox-filter {
+	// display: flex;
+	// align-items: center;
+
+	&__input {
+		&:checked+.checkbox__label:before {
+			background: rgb(0, 129, 249);
+			border: 1px solid #FFF;
+		}
+	}
+
+	&__label {
+		width: 100%;
+		justify-content: space-between;
+		flex-direction: row-reverse;
+
+
+
+		&::before {
+			flex: 0 0 10px;
+			width: 10px;
+			height: 10px;
+			border: 1px solid rgb(33, 148, 255);
+			align-self: center;
+		}
+	}
+
+	&__text {
+		color: rgb(0, 0, 0);
+		font-family: Inter;
+		font-size: rem(16);
+		font-weight: 400;
+		line-height: math.div(16, 12);
+
+
+	}
+}
+
+.filter {
+	display: flex;
+	align-items: center;
+	gap: rem(6);
+	padding: 6px 0px 6px 26px;
+	background: rgb(202, 230, 255);
+
+	// .filter__item
+	&__item {}
+
+
+
+	// 
+	&__icon {
+		cursor: pointer;
+		position: relative;
+		width: 20px;
+		height: 20px;
+
+		&::before {
+			font-size: rem(20);
+			color: #000;
+
+		}
+
+
+		@media (any-hover: hover) {
+			&:hover {
+				.tooltip {
+					visibility: inherit;
+					opacity: 1;
+				}
+			}
+		}
+	}
+
+	// .filter__results
+	&__results {
+		display: flex;
+		row-gap: rem(5);
+		column-gap: rem(5);
+		flex-wrap: wrap;
+
+		span {
+			color: rgb(0, 0, 0);
+			font-family: Inter;
+			font-size: rem(16);
+			font-weight: 400;
+			line-height: math.div(12, 16);
+		}
+
+
+	}
+}
+
+.tooltip {
+
+	// .tooltip__polygon
+	&__polygon {}
+
+	// .tooltip__list
+	&__list {}
+
+	// .tooltip__item
+	&__item {}
+}
+
+.triangle-container {}
+
+.triangle {}
+
+.checkbox {
+
+	// .checkbox__input
+	&__input {}
+
+	// .checkbox__label
+	&__label {}
+
+	// .checkbox__text
+	&__text {}
+}
+
+.item-fleet {
+	@include adaptiveValue("gap", 148, 15, 1920, 1600, 1);
+
+	// .item-fleet__body
+	&__body {
+		flex: 1 1 100%;
+	}
+
+	// .item-fleet__list
+	&__list {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+
+		@media (max-width:em(1355)) {
+			flex-wrap: wrap;
+			align-self: center;
+			// justify-content: center;
+		}
+	}
+
+	// .item-fleet__item
+	&__item {
+		flex: 0 1 14.95%;
+		display: flex;
+		flex-direction: column;
+		gap: rem(10);
+
+		@media (max-width:em(1355)) {
+			flex: 0 1 45%;
+			align-items: center;
+			// width: rem(139);
+		}
+
+		@media (max-width:$tablet) {
+			flex: 0 1 100%;
+			align-items: center;
+
+		}
+	}
+
+	// .item-fleet__title
+	&__title {
+		color: rgb(0, 0, 0);
+		font-family: Inter;
+		@include adaptiveValue("font-size", 20, 15);
+		font-weight: 400;
+		line-height: math.div(20, 24);
+	}
+
+	// .item-fleet__content
+	&__content {
+		text-wrap: nowrap;
+		color: rgb(0, 0, 0);
+		font-family: Inter;
+		font-size: rem(16);
+		font-weight: 400;
+
+		line-height: math.div(19, 16);
+
+	}
+
+	// .item-fleet__detail
+	&__detail {
+		align-self: center;
+		@include adaptiveValue("padding-top", 9, 4.5);
+		@include adaptiveValue("padding-bottom", 9, 4.5);
+		@include adaptiveValue("padding-left", 44, 15);
+		@include adaptiveValue("padding-right", 44, 15);
+		color: rgb(255, 255, 255);
+		font-family: Inter;
+		@include adaptiveValue("font-size", 18, 16);
+		font-weight: 400;
+		line-height: math.div(22, 16);
+		letter-spacing: 0%;
+		text-align: left;
+
+		border-radius: 20px;
+	}
+}
+
+.button {}
+
+.item-checkbox {
+	display: flex;
+	flex-direction: column;
+	gap: rem(10);
+
+	&__title {}
+
+	&__items {
+		display: flex;
+		flex-direction: column;
+		gap: rem(10);
+	}
+
+}

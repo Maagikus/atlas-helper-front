@@ -1,27 +1,29 @@
 <template>
-    <div class="container">
-        <KeyModals :should-show-modal="shouldShowModal"></KeyModals>
+    <div class="app">
+        <!-- <KeyModals :should-show-modal="shouldShowModal"></KeyModals> -->
         <Header></Header>
-        <wallet-multi-button></wallet-multi-button>
         <router-view></router-view>
     </div>
 </template>
 
 <script setup>
-import { computed, onBeforeMount, onMounted, ref, watch, watchEffect } from "vue"
+import { computed, onBeforeMount, onMounted, provide, ref, watch, watchEffect } from "vue"
 import { useAuthStore } from "@/store/authStore.js"
 import KeyModals from "@/components/modals/KeyModals.vue"
 import Header from "@/components/Header.vue"
 import { useUserStore } from "@/store/userStore.js"
 import { useGameStore } from "./store/gameStore"
 import { initWallet } from "solana-wallets-vue"
-import { WalletMultiButton } from "solana-wallets-vue"
 import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets"
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
 import { initWorkspace } from "./helpers/provider"
+import { socket } from "./socket"
+
 // import { useUserStore } from "@/store/userStore.js"
 // import { useWorkspace, initWorkspace } from "./helpers/provider"
 // import { AnchorProvider } from "@project-serum/anchor"
+const fleets = ref([])
+provide("fleets", fleets)
 const authStore = useAuthStore()
 const userStore = useUserStore()
 
@@ -32,8 +34,33 @@ const walletOptions = {
 initWallet(walletOptions)
 initWorkspace()
 onBeforeMount(async () => {
-    if (localStorage.getItem("token")) await authStore.checkUser()
+    if (localStorage.getItem("token")) {
+        await authStore.checkUser()
+        const user = authStore.getUser
+        //   await userStore.loadUserFleets(userKey)
+        fleets.value = userStore.getUserFleets
+
+        socket.emit("initGame", JSON.stringify({ key: user.walletPublicKey }))
+    }
 })
+// onBeforeMount(async () => {
+//     await authStore.checkUser()
+//     const user = authStore.getUser
+//     //   await userStore.loadUserFleets(userKey)
+//     fleets.value = userStore.getUserFleets
+
+//     socket.emit("initGame", JSON.stringify({ key: user.walletPublicKey }))
+// })
+watch(
+    () => authStore.getUser.walletPublicKey,
+    async (userKey) => {
+        if (userKey) {
+            await userStore.loadUserFleets(userKey)
+            fleets.value = userStore.getUserFleets
+            provide("fleets", fleets.value)
+        }
+    }
+)
 onMounted(() => {
     //   console.log("provider", provider)
 })

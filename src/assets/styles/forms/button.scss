@@ -4,10 +4,24 @@
 .button {
 	display: inline-flex;
 	padding: 0px 0px;
+	cursor: pointer;
+	color: #fff;
+	background: rgb(79, 170, 255);
+	box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+	transition: all 0.3s ease 0s;
+
+	&:focus {
+		background-color: #4F8CFF;
+		box-shadow: 0px 2.5px 2.5px 0px rgba(0, 0, 0, 0.25);
+	}
+
 	@media (any-hover: hover) {
 		&:hover {
+			background-color: #4F8CFF;
+			box-shadow: 0px 2.5px 2.5px 0px rgba(0, 0, 0, 0.25);
 		}
 	}
+
 	&._fw {
 		width: 100%;
 	}

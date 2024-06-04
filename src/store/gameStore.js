@@ -145,29 +145,30 @@ export const useGameStore = defineStore("game", {
             //     console.log(error)
             // }
         },
-        async dockFleet(data) {
+        async dockFleet(fleet) {
+            //HERE WAS DATA
             // const data = {
             //     key: useAuthStore().getUser.walletPublicKey,
             //     fleet: fleet,
             //     priorityFee: 1,
             // }
-            socket.emit("dock", JSON.stringify(data))
-            // console.log("fleet", fleet)
-            // const { program, craftingProgram, wallet, connection, provider } = useWorkspace()
-            // const { sageGameHandler } = await this.setupSageGameHandlerReadyAndLoadGame(connection, provider.value)
-            // const sageFleetHandler = new SageFleetHandler(sageGameHandler)
-            // let ix
-            // let rx
-            // const playerPubkey = new PublicKey(wallet.value.publicKey.toBase58())
-            // const playerProfilePubkey = await sageGameHandler.getPlayerProfileAddress(playerPubkey)
-            // const fleetPubkey = sageGameHandler.getFleetAddress(playerProfilePubkey, fleet)
-            // const fleetAccount = await sageFleetHandler.getFleetAccount(fleetPubkey)
-            // ix = await sageFleetHandler.ixDockToStarbase(fleetPubkey, playerPubkey)
-            // rx = await sageGameHandler.txSignAndSend(ix, fleet, "DOCK", 0, playerPubkey, wallet.value)
-            // console.log("rx", rx)
-            // if (!rx.value.isOk()) {
-            //     throw "fleet failed to undock"
-            // }
+            // socket.emit("dock", JSON.stringify(data))
+            console.log("fleet", fleet)
+            const { program, craftingProgram, wallet, connection, provider } = useWorkspace()
+            const { sageGameHandler } = await this.setupSageGameHandlerReadyAndLoadGame(connection, provider.value)
+            const sageFleetHandler = new SageFleetHandler(sageGameHandler)
+            let ix
+            let rx
+            const playerPubkey = new PublicKey(wallet.value.publicKey.toBase58())
+            const playerProfilePubkey = await sageGameHandler.getPlayerProfileAddress(playerPubkey)
+            const fleetPubkey = sageGameHandler.getFleetAddress(playerProfilePubkey, fleet)
+            const fleetAccount = await sageFleetHandler.getFleetAccount(fleetPubkey)
+            ix = await sageFleetHandler.ixDockToStarbase(fleetPubkey, playerPubkey)
+            rx = await sageGameHandler.txSignAndSend(ix, fleet, "DOCK", 0, playerPubkey, wallet.value)
+            console.log("rx", rx)
+            if (!rx.value.isOk()) {
+                throw "fleet failed to undock"
+            }
         },
         async undockFleet(data) {
             // const data = {
@@ -189,14 +190,15 @@ export const useGameStore = defineStore("game", {
             console.log(data.key)
             socket.emit("warp", JSON.stringify(data))
         },
-        async subWarp(fleet, coord) {
-            const data = {
-                key: useAuthStore().getUser.walletPublicKey,
-                fleet: fleet,
-                priorityFee: 1,
-                forwardCoordForWarp: coord,
-            }
-            console.log(data.key)
+        async subWarp(data) {
+            // const data = {
+            //     key: useAuthStore().getUser.walletPublicKey,
+            //     fleet: fleet,
+            //     priorityFee: 1,
+            //     forwardCoordForWarp: coord,
+            // }
+            // console.log(data.key)
+            console.log("data", data)
             socket.emit("subwarp", JSON.stringify(data))
         },
         async moveTo(fleet, coord) {
@@ -205,8 +207,28 @@ export const useGameStore = defineStore("game", {
                 fleet: fleet,
                 priorityFee: 1,
                 forwardCoordForWarp: coord,
+                startCoord: "0 -39",
+                //   loop: 3,
+                //   resourceValueAtDestination: 0,
+                //   resourceValueAtStartingPoint: 700,
+                //   resource: 'fuel',
             }
             socket.emit("moveTo", JSON.stringify(data))
+        },
+        async transferSmth(data) {
+            // const dataForSending = {
+            //     key: useAuthStore().getUser.walletPublicKey,
+            //     fleet: data.fleet,
+            //     priorityFee: 1,
+            //     forwardCoordForWarp: data.forwardCoordForWarp,
+            //     startCoord: data.startCoord,
+            //     loop: data.loop,
+            //     resourceValueAtDestination: data.resourceValueAtDestination,
+            //     resourceValueAtStartingPoint: data.resourceValueAtStartingPoint,
+            //     resource: data.resource,
+            // }
+            console.log("data", data)
+            socket.emit("transferSmth", JSON.stringify(data))
         },
         async startMining(data) {
             socket.emit("message", JSON.stringify([data]))

@@ -4,6 +4,7 @@ import router from "@/router.js"
 import { useAuthStore } from "@/store/authStore.js"
 import { socket } from "@/socket.js"
 import { useGameStore } from "./gameStore"
+import { useUserStore } from "./userStore"
 export const useChatStore = defineStore("chat", {
     state: () => ({
         messages: [],
@@ -22,16 +23,23 @@ export const useChatStore = defineStore("chat", {
                 dock: gameStore.dockFleet,
                 undock: gameStore.undockFleet,
                 mining: gameStore.startMining,
-                //  subwarp: gameStore.subWarp,
+                transfer: gameStore.transferSmth,
+                subwarp: gameStore.subWarp,
                 //  move: gameStore.moveTo,
             }
             socket.on("ask", (mess) => {
                 const data = JSON.parse(mess)
-                if (data.content.instructions) {
-                    const dataForSending = { ...data.content.instructions, key: useAuthStore().getUser.walletPublicKey }
+                console.log("data", data)
+
+                if (data.content.intermediateSteps && data.content.intermediateSteps.process) {
+                    console.log("data", data)
+                    const fleetId = useUserStore().getUserFleets.find((i) => i.fleetName === data.content.intermediateSteps.fleet).fleetKey
+                    console.log("fleetId", fleetId)
+                    const dataForSending = { ...data.content.intermediateSteps, key: useAuthStore().getUser.walletPublicKey, userId: useAuthStore().getUser.id, fleetId }
                     const selectedFunction = processActions[dataForSending.process]
                     selectedFunction(dataForSending)
-                    //   socket.emit("message", JSON.stringify([dataForSending]))
+
+                    socket.emit("message", JSON.stringify([dataForSending]))
                     //   console.log(dataForSending)
                 }
                 // const { process, ...otherData } = JSON.parse(data.content)

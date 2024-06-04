@@ -1,4 +1,4 @@
-// import "./assets/styles/style.scss"
+import "./assets/styles/style.scss"
 import { createApp } from "vue"
 import App from "./App.vue"
 import SolanaWallets from "solana-wallets-vue"
@@ -6,7 +6,6 @@ import "solana-wallets-vue/styles.css"
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
 import router from "@/router.js"
 import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets"
-import "bootstrap/dist/css/bootstrap.css"
 import { createPinia } from "pinia"
 
 const walletOptions = {
@@ -19,7 +18,7 @@ const pinia = createPinia()
 const app = createApp(App)
 
 app.use(pinia)
-app.use(router)
 app.use(SolanaWallets, walletOptions)
+app.use(router)
+
 app.mount("#app")
-import "bootstrap/dist/js/bootstrap.js"

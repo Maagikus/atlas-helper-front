@@ -318,8 +318,8 @@
 </template>
 
 <script setup>
-import "bootstrap/dist/css/bootstrap.css"
-import "bootstrap-vue/dist/bootstrap-vue.css"
+// import "bootstrap/dist/css/bootstrap.css"
+// import "bootstrap-vue/dist/bootstrap-vue.css"
 import { reactive, ref, onMounted, watchEffect, watch } from "vue"
 import ProcessStatus from "./ProcessStatus.vue"
 import Fleets from "./Fleets.vue"
