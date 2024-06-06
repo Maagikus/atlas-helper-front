@@ -10,10 +10,10 @@ import FleetHistory from "@/components/FleetHistory.vue"
 import CurrentFleet from "@/components/CurrentFleet.vue"
 import FleetStats from "@/components/FleetStats.vue"
 import CurrentFleetPage from "@/pages/CurrentFleetPage.vue"
-import SettingsPage from "@/pages/SettingsPage.vue"
 import AccountSettingPage from "./pages/AccountSettingPage.vue"
 import BillingSettingPage from "./pages/BillingSettingPage.vue"
 import InvoicesSettingPage from "./pages/InvoicesSettingPage.vue"
+import HandControl from "@/components/HandControl.vue"
 
 const routes = [
     {
@@ -28,6 +28,10 @@ const routes = [
             {
                 path: "history",
                 component: FleetHistory,
+            },
+            {
+                path: "hand-control",
+                component: HandControl,
             },
         ],
         name: "StartedPage",

@@ -830,6 +830,7 @@ export class SageGameHandler {
                 console.log(4, `${fleetName} <${opName}> 💳 Fee ${Math.ceil(priorityFee / 5)} lamp`)
                 let instructions = []
                 if (priorityFee > 0) instructions.push(web3.ComputeBudgetProgram.setComputeUnitPrice({ microLamports: priorityFee }))
+                console.log("ix", ix)
                 if (ix.constructor === Array) {
                     ix.forEach((item) => instructions.push(item.instruction))
                 } else {

@@ -1,3 +1,4 @@
+import { BN } from "@project-serum/anchor"
 import { socket } from "@/socket.js"
 import { defineStore } from "pinia"
 import { useAuthStore } from "./authStore"
@@ -14,6 +15,7 @@ export const useGameStore = defineStore("game", {
         movementDashboard: [],
         actions: [],
         provider: null,
+        serverPlay: true,
     }),
     getters: {
         getMiningDashboard: (state) => state.miningDashboard,
@@ -25,17 +27,21 @@ export const useGameStore = defineStore("game", {
             socket.on("dock", (mess) => {
                 const res = JSON.parse(mess)
                 useUserStore().updateFleetState(res.fleet, res.state)
-                console.log("dock", res)
             })
             socket.on("undock", (mess) => {
                 const res = JSON.parse(mess)
                 useUserStore().updateFleetState(res.fleet, res.state)
-                console.log("undock", res)
+            })
+            socket.on("updateFleetState", (mess) => {
+                const res = JSON.parse(mess)
+                console.log("res", res)
+                useUserStore().updateFleetState(res.fleet, res.state)
+                console.log("updateFleetState", res)
             })
             socket.on("warp", (mess) => {
                 const res = JSON.parse(mess)
                 useUserStore().updateFleetState(res.fleet, res.state)
-                console.log("warp", res)
+
                 //  console.log("dock", res)
             })
             socket.on("subwarp", (mess) => {
@@ -45,6 +51,9 @@ export const useGameStore = defineStore("game", {
         },
         addProvider(provider) {
             this.provider = provider
+        },
+        changePlayLogic(type) {
+            this.serverPlay = type
         },
         async getPlayerProfileAddress(playerPubkey, connection) {
             console.log("connection", connection)
@@ -145,30 +154,32 @@ export const useGameStore = defineStore("game", {
             //     console.log(error)
             // }
         },
-        async dockFleet(fleet) {
+        async dockFleet(data) {
             //HERE WAS DATA
             // const data = {
             //     key: useAuthStore().getUser.walletPublicKey,
             //     fleet: fleet,
             //     priorityFee: 1,
             // }
-            // socket.emit("dock", JSON.stringify(data))
-            console.log("fleet", fleet)
-            const { program, craftingProgram, wallet, connection, provider } = useWorkspace()
-            const { sageGameHandler } = await this.setupSageGameHandlerReadyAndLoadGame(connection, provider.value)
-            const sageFleetHandler = new SageFleetHandler(sageGameHandler)
-            let ix
-            let rx
-            const playerPubkey = new PublicKey(wallet.value.publicKey.toBase58())
-            const playerProfilePubkey = await sageGameHandler.getPlayerProfileAddress(playerPubkey)
-            const fleetPubkey = sageGameHandler.getFleetAddress(playerProfilePubkey, fleet)
-            const fleetAccount = await sageFleetHandler.getFleetAccount(fleetPubkey)
-            ix = await sageFleetHandler.ixDockToStarbase(fleetPubkey, playerPubkey)
-            rx = await sageGameHandler.txSignAndSend(ix, fleet, "DOCK", 0, playerPubkey, wallet.value)
-            console.log("rx", rx)
-            if (!rx.value.isOk()) {
-                throw "fleet failed to undock"
+
+            if (this.serverPlay) {
+                socket.emit("dock", JSON.stringify(data))
             }
+            // else {
+            //     const { program, craftingProgram, wallet, connection, provider } = useWorkspace()
+            //     const { sageGameHandler } = await this.setupSageGameHandlerReadyAndLoadGame(connection, provider.value)
+            //     const sageFleetHandler = new SageFleetHandler(sageGameHandler)
+            //     let ix
+            //     let rx
+            //     const playerPubkey = new PublicKey(wallet.value.publicKey.toBase58())
+            //     const playerProfilePubkey = await sageGameHandler.getPlayerProfileAddress(playerPubkey)
+            //     const fleetPubkey = sageGameHandler.getFleetAddress(playerProfilePubkey, data.fleet)
+            //     const fleetAccount = await sageFleetHandler.getFleetAccount(fleetPubkey)
+            //     ix = await sageFleetHandler.ixDockToStarbase(fleetPubkey, playerPubkey)
+            //     rx = await sageGameHandler.txSignAndSend(ix, data.fleet, "DOCK", 0, playerPubkey, wallet.value)
+            //     console.log("rx", rx)
+            //     socket.emit("updateFleetState", JSON.stringify({ fleetName: data.fleet }))
+            // }
         },
         async undockFleet(data) {
             // const data = {
@@ -176,9 +187,23 @@ export const useGameStore = defineStore("game", {
             //     fleet: fleet,
             //     priorityFee: 1,
             // }
-            console.log("data", data)
 
-            socket.emit("undock", JSON.stringify(data))
+            if (this.serverPlay) {
+                socket.emit("undock", JSON.stringify(data))
+            } else {
+                const { program, craftingProgram, wallet, connection, provider } = useWorkspace()
+                const { sageGameHandler } = await this.setupSageGameHandlerReadyAndLoadGame(connection, provider.value)
+                const sageFleetHandler = new SageFleetHandler(sageGameHandler)
+                let ix
+                let rx
+                const playerPubkey = new PublicKey(wallet.value.publicKey.toBase58())
+                const playerProfilePubkey = await sageGameHandler.getPlayerProfileAddress(playerPubkey)
+                const fleetPubkey = sageGameHandler.getFleetAddress(playerProfilePubkey, data.fleet)
+                const fleetAccount = await sageFleetHandler.getFleetAccount(fleetPubkey)
+                ix = await sageFleetHandler.ixUndockFromStarbase(fleetPubkey, playerPubkey)
+                rx = await sageGameHandler.txSignAndSend(ix, data.fleet, "DOCK", 0, playerPubkey, wallet.value)
+                socket.emit("updateFleetState", JSON.stringify({ fleetName: data.fleet }))
+            }
         },
         async warp(fleet, coord) {
             const data = {
@@ -230,8 +255,207 @@ export const useGameStore = defineStore("game", {
             console.log("data", data)
             socket.emit("transferSmth", JSON.stringify(data))
         },
+        async wait(minutes) {
+            const endTime = new Date(Date.now() + minutes * 60000 + 10)
+
+            console.log(`Waiting for ${minutes} minutes...`)
+            console.log(`End Time ${endTime} minutes...`)
+
+            await new Promise((resolve) => {
+                const timer = setInterval(() => {
+                    const currentTime = new Date()
+                    if (currentTime >= endTime) {
+                        clearInterval(timer)
+                        resolve()
+                    }
+                }, 60000)
+            })
+
+            console.log(`Ожидание завершено.`)
+        },
         async startMining(data) {
-            socket.emit("message", JSON.stringify([data]))
+            if (this.serverPlay) {
+                socket.emit("message", JSON.stringify([data]))
+            }
+            // else {
+            //     console.log("data", data)
+            //     const { program, craftingProgram, wallet, connection, provider } = useWorkspace()
+            //     const { sageGameHandler } = await this.setupSageGameHandlerReadyAndLoadGame(connection, provider.value)
+            //     const sageFleetHandler = new SageFleetHandler(sageGameHandler)
+            //     let ix
+            //     let rx
+            //     const playerPubkey = new PublicKey(wallet.value.publicKey.toBase58())
+            //     const playerProfilePubkey = await sageGameHandler.getPlayerProfileAddress(playerPubkey)
+            //     const fleetPubkey = sageGameHandler.getFleetAddress(playerProfilePubkey, data.fleet)
+            //     //  const fleetAccount = await sageFleetHandler.getFleetAccount(fleetPubkey)
+
+            //     //  ix = await sageFleetHandler.ixDockToStarbase(fleetPubkey, playerPubkey)
+            //     //  rx = await sageGameHandler.txSignAndSend(ix, data.fleet, "DOCK", 0, playerPubkey, wallet.value)
+            //     //  console.log("rx", rx)
+            //     //  socket.emit("updateFleetState", JSON.stringify({ fleetName: data.fleet }))
+
+            //     for (let i = 0; i < data.loop; i++) {
+            //         console.log(data.priorityFee)
+            //         console.log(`${i}<!-- Start Mining (${data.resource}) with ${data.fleet} -->`)
+            //         socket.send(
+            //             JSON.stringify({
+            //                 program: "mining",
+            //                 fleet: data.fleet,
+            //                 status: "success",
+            //                 mess: `Start Mining (${data.resource}) with ${data.fleet}`,
+            //                 action: "Mining",
+            //                 dataForRepeating: data,
+            //             })
+            //         )
+
+            //         const fleetPubkey = sageGameHandler.getFleetAddress(playerProfilePubkey, data.fleet)
+
+            //         let fleetAccount = await sageFleetHandler.getFleetAccount(fleetPubkey)
+            //         const resourceTokenAmmo = sageGameHandler.getResourceMintAddress("ammo")
+
+            //         const { timeForMining, ammoForDuration, foodForDuration } = await sageFleetHandler.getMiningDuration(fleetPubkey, data.resource, data.planet)
+            //         console.log("timeForMining", timeForMining)
+            //         console.log("ammoForDuration", ammoForDuration)
+            //         console.log("foodForDuration", foodForDuration)
+
+            //         const currentAmmo = await sageFleetHandler.getCurrentFuelValue(fleetPubkey, resourceTokenAmmo, fleetAccount.data.ammoBank)
+            //         const cargoStats = fleetAccount.data.stats.cargoStats
+
+            //         if (currentAmmo < ammoForDuration) {
+            //             ix = await sageFleetHandler.ixDepositCargoToFleet(fleetPubkey, fleetAccount.data.ammoBank, resourceTokenAmmo, new BN(cargoStats.ammoCapacity - currentAmmo), playerPubkey)
+            //             // console.log("fleetPubkey", fleetPubkey);
+            //             rx = await sageGameHandler.txSignAndSend(ix, data.fleet, "FILL AMMO", 0, playerPubkey, wallet.value)
+            //             // if (!rx.value.isOk()) {
+            //             //     throw "fleet failed to fill ammo to bank"
+            //             // }
+            //             socket.send(
+            //                 JSON.stringify({
+            //                     fleet: data.fleet,
+            //                     status: "success",
+            //                     mess: "Fill ammo tank",
+            //                     action: "End fill ammo",
+            //                 })
+            //             )
+            //         }
+
+            //         const mintToken = sageGameHandler.mints?.food
+            //         const cargoPodToKey = fleetAccount.data.cargoHold
+            //         console.log("")
+            //         ix = await sageFleetHandler.ixDepositCargoToFleet(fleetPubkey, cargoPodToKey, mintToken, new BN(foodForDuration), playerPubkey)
+            //         //   rx = await sageGameHandler.txSignAndSend(ix, data.fleet, "FILL FOOD", 0, playerPubkey, wallet.value)
+            //         socket.send(
+            //             JSON.stringify({
+            //                 fleet: data.fleet,
+            //                 status: "success",
+            //                 mess: "Fill with Food",
+            //                 action: "Filling Food",
+            //             })
+            //         )
+            //         //   if (!rx.value.isOk()) {
+            //         //       throw "fleet failed to fill with food"
+            //         //   }
+            //         //   if (!fleetAccount.state.Idle) {
+            //         //       ix = await sageFleetHandler.ixUndockFromStarbase(fleetPubkey, playerPubkey)
+            //         //       rx = await sageGameHandler.txSignAndSend(ix, data.fleet, "UNDOCK", 0, playerPubkey, wallet.value)
+            //         //       socket.send(
+            //         //           JSON.stringify({
+            //         //               fleet: data.fleet,
+            //         //               status: "success",
+            //         //               mess: "Undocking",
+            //         //               action: "Undocking",
+            //         //           })
+            //         //       )
+            //         //   }
+            //         //========================================================================================================================================================
+            //         //TEST TO HERE
+            //         //   //  console.log("miningDuration", miningDuration);
+            //         //   //  console.log("ammoForDuration", ammoForDuration);
+            //         //   await new Promise((resolve) => setTimeout(resolve, 10000))
+            //         //   ix = await sageFleetHandler.ixStartMining(fleetPubkey, data.resource, data.planet)
+            //         //   rx = await sageGameHandler.txSignAndSend(ix, data.fleet, "START MINING", 0, playerPubkey, wallet.value)
+            //         //   socket.send(
+            //         //       JSON.stringify({
+            //         //           fleet: data.fleet,
+            //         //           status: "success",
+            //         //           mess: "Start Mining",
+            //         //           action: "Mining",
+            //         //       })
+            //         //   )
+            //         //   //   if (!rx.value.isOk()) {
+            //         //   //       // await bot.sendMessage(msg.chat.id, 'fleet failed to start mining')
+            //         //   //       throw "fleet failed to start mining"
+            //         //   //   }
+            //         //   fleetAccount = await sageFleetHandler.getFleetAccount(fleetPubkey)
+            //         //   console.log(`${index}Fleet state: ${JSON.stringify(fleetAccount.state)}`)
+            //         //   console.log(`${index}Waiting for ${timeForMining} minutes...`)
+            //         //   socket.send(
+            //         //       JSON.stringify({
+            //         //           fleet: data.fleet,
+            //         //           status: "success",
+            //         //           mess: `Waiting for ${timeForMining} minutes...`,
+            //         //           action: "Mining",
+            //         //       })
+            //         //   )
+
+            //         //   //  await new Promise((resolve) => setTimeout(resolve, time * 60 * 1000));
+            //         //   await this.wait(timeForMining)
+
+            //         //   console.log("Prepare to stopping mining...")
+            //         //   await new Promise((resolve) => setTimeout(resolve, 10000))
+            //         //   ix = await sageFleetHandler.ixStopMining(fleetPubkey)
+            //         //   rx = await sageGameHandler.txSignAndSend(ix, data.fleet, "STOP MINING", 0, playerPubkey, wallet.value)
+            //         //   socket.send(
+            //         //       JSON.stringify({
+            //         //           fleet: data.fleet,
+            //         //           status: "success",
+            //         //           mess: `Prepare to stopping mining`,
+            //         //           action: "Stopping",
+            //         //       })
+            //         //   )
+            //         //   //   if (!rx.value.isOk()) {
+            //         //   //       throw "fleet failed to stop mining"
+            //         //   //   }
+            //         //   console.log("Prepare to dock to starbase...")
+
+            //         //   await new Promise((resolve) => setTimeout(resolve, 10000))
+
+            //         //   ix = await sageFleetHandler.ixDockToStarbase(fleetPubkey)
+            //         //   rx = await sageGameHandler.txSignAndSend(ix, data.fleet, "DOCK", 0, playerPubkey, wallet.value)
+            //         //   socket.send(
+            //         //       JSON.stringify({
+            //         //           fleet: data.fleet,
+            //         //           status: "success",
+            //         //           mess: `Prepare to dock to starbase`,
+            //         //           action: "docking",
+            //         //       })
+            //         //   )
+            //         //   //   if (!rx.value.isOk()) {
+            //         //   //       throw "fleet failed to dock to starbase"
+            //         //   //   }
+            //         //   console.log("Prepare to deposit mined resources...")
+            //         //   const food = sageGameHandler.mints?.food
+            //         //   const currentFood = await sageFleetHandler.getCurrentFuelValue(fleetPubkey, food, fleetAccount.data.cargoHold)
+            //         //   console.log("food at the end>>>>", currentFood)
+            //         //   await new Promise((resolve) => setTimeout(resolve, 10000))
+            //         //   const resourceToken = sageGameHandler.getResourceMintAddress(resource)
+            //         //   ix = await sageFleetHandler.ixWithdrawCargoFromFleet(fleetPubkey, resourceToken, new BN(0), fleetAccount.data.cargoHold)
+            //         //   rx = await sageGameHandler.txSignAndSend(ix, data.fleet, "WITHDRAW RESOURCE", 0, playerPubkey, wallet.value)
+            //         //   socket.send(
+            //         //       JSON.stringify({
+            //         //           fleet: data.fleet,
+            //         //           status: "success",
+            //         //           mess: `Withdraw mined recource`,
+            //         //           action: "Withdrawing",
+            //         //       })
+            //         //   )
+            //         //   //   if (!rx.value.isOk()) {
+            //         //   //       throw "fleet failed to deposit mined resources"
+            //         //   //   }
+
+            //         //   console.log(`${index}<!-- Stop Mining (${data.resource}) with ${data.fleet} -->`)
+            //         //   await new Promise((resolve) => setTimeout(resolve, 10000))
+            //     }
+            // }
         },
     },
 })

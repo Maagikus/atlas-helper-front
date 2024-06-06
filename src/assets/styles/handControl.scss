@@ -1,0 +1,230 @@
+.error-message {
+	color: red;
+	margin-top: 10px;
+}
+
+.success-message {
+	color: green;
+	margin-top: 10px;
+}
+
+.wrap {
+	flex: 0 1 auto;
+}
+
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 30px;
+}
+
+@media screen and (max-width: 1200px) {
+	.wrapper {
+		//padding-left: 150px;
+		//padding-right: 150px;
+	}
+}
+
+@media screen and (max-width: 992px) {
+	.wrapper {
+		//padding-left: 100px;
+		//padding-right: 100px;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.wrapper {
+		//padding-left: 15px;
+		//padding-right: 15px;
+	}
+}
+
+.control-form {
+	width: 100%;
+	text-align: center;
+	padding: 20px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.form__item {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+label {
+	display: block;
+}
+
+input {
+	width: 100%;
+	padding: 8px;
+	height: 30px;
+	//margin-bottom: 10px;
+	box-sizing: border-box;
+}
+
+button {
+	// background-color: #3498db;
+	color: #fff;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.move {
+	background-color: #3498db;
+	color: #fff;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.move:hover {
+	background-color: #2980b9;
+}
+
+button:hover {
+	background-color: #2980b9;
+}
+
+.mining-form {
+	flex: 1 0 auto;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.form-transport__wrapper {
+	display: flex;
+	gap: rem(20);
+	flex-wrap: wrap;
+	align-items: flex-start;
+}
+
+@media screen and (max-width: 992px) {
+	.form-transport__wrapper {
+		flex-direction: column;
+		align-items: center;
+	}
+}
+
+.select__wrap {
+	display: flex;
+	gap: rem(10);
+}
+
+.select__wrap select {
+	flex: 1 0 auto;
+}
+
+.select__input {
+	// flex: 1 1 50%;
+	width: 100px;
+}
+
+.menu {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.menu__item {
+	display: inline-block;
+	padding: 10px 20px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.menu__item.active {
+	background-color: #3498db;
+	color: #fff;
+}
+
+.menu__item.active:hover {
+	background-color: #3498db;
+	color: #fff;
+}
+
+.menu__item:hover {
+	background-color: #f2f2f2;
+}
+
+.process {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.login__form {
+	position: relative;
+}
+
+.forSanuya {
+	width: 500px;
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.text {
+	font-size: 50px;
+	color: #29a4c3;
+}
+
+.forSanuya img {
+	width: 20%;
+	height: 500%;
+}
+
+.items {
+	display: flex;
+	gap: 20px;
+}
+
+.chat {
+	flex: 0 1 30%;
+}
+
+
+@media screen and (max-width: 768px) {
+	.items {
+		flex-direction: column-reverse;
+	}
+}
+
+.select__item {
+	width: auto;
+}
+
+.form-transport {
+	&__right {
+		display: flex;
+		flex-direction: column;
+		gap: rem(10);
+	}
+
+	&__left {
+		display: flex;
+		flex-direction: column;
+		gap: rem(10);
+	}
+
+	&__general {
+		display: flex;
+		flex-direction: column;
+		gap: rem(10);
+	}
+}

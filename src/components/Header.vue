@@ -11,8 +11,14 @@
                             <li class="menu__item"><router-link to="/registration" class="menu__link button">Registration</router-link></li>
                         </ul>
                         <ul v-if="isUser" class="menu__list">
+                            <li class="menu__item">
+                                <div class="checkbox options__checkbox menu-checkbox">
+                                    <input id="c_3" data-error="Ошибка" class="checkbox__input options__input" type="checkbox" v-model="isServerSidePlay" :value="isServerSidePlay" name="form[]" />
+                                    <label for="c_3" class="checkbox__label options__label menu-checkbox__label"><span class="checkbox__text options__text">Server Side Play</span></label>
+                                </div>
+                            </li>
+
                             <wallet-multi-button></wallet-multi-button>
-                            <li class="menu__list"></li>
                             <li class="menu__item">
                                 <a href="#" class="menu__link menu-link">
                                     <div class="menu-link__content _icon-wallet">
@@ -35,6 +41,7 @@
                             <li class="menu__item">
                                 <a href="#" class="menu__link _icon-settings"> </a>
                             </li>
+                            <li class="menu__item"></li>
                             <li @click="logout()" class="menu__item"><a href="#" class="menu__link button">Logout</a></li>
                         </ul>
                     </nav>
@@ -58,6 +65,8 @@ const gameStore = useGameStore()
 const { provider, wallet } = useWorkspace()
 const userWalletKey = ref("")
 const menuOpen = ref(false)
+const isServerSidePlay = ref(true)
+
 // const wallet = useWallet()
 const isUser = ref(false)
 const logout = async () => {
@@ -71,7 +80,15 @@ const { readyState } = useWallet()
 const getFleet = async () => {
     await gameStore.getUserFleets()
 }
-
+onMounted(async () => {
+    gameStore.changePlayLogic(isServerSidePlay.value)
+})
+watch(
+    () => isServerSidePlay.value,
+    (newValue) => {
+        gameStore.changePlayLogic(newValue)
+    }
+)
 watch(
     () => wallet.value, // Watch for changes in readyState
     (newValue, oldValue) => {

@@ -16,6 +16,7 @@ import { onMounted, ref } from "vue"
 const pagesLink = [
     { name: "Dashboard", link: "/dashboard" },
     { name: "History", link: "/history" },
+    { name: "Hand Control", link: "/hand-control" },
 ]
 const userStore = useUserStore()
 const history = ref([])

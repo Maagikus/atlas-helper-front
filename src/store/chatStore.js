@@ -39,7 +39,7 @@ export const useChatStore = defineStore("chat", {
                     const selectedFunction = processActions[dataForSending.process]
                     selectedFunction(dataForSending)
 
-                    socket.emit("message", JSON.stringify([dataForSending]))
+                    //   socket.emit("message", JSON.stringify([dataForSending]))
                     //   console.log(dataForSending)
                 }
                 // const { process, ...otherData } = JSON.parse(data.content)

@@ -22,8 +22,8 @@ export const useUserStore = defineStore("users", {
             this.userKey = key
         },
         updateFleetState(fleetName, state) {
-            const index = this.userFleets.findIndex((i) => i.fleetName === fleetName)
             console.log("fleetName", fleetName, "State", state)
+            const index = this.userFleets.findIndex((i) => i.fleetName === fleetName)
             if (index != -1) this.userFleets[index].fleetState = state
         },
         async setUserWalletPublicKey(data) {

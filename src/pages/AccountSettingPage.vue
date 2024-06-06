@@ -54,14 +54,17 @@
 <script setup>
 import PageControl from "@/components/PageControl.vue"
 import MainLayout from "@/layouts/MainLayout.vue"
+import { useGameStore } from "@/store/gameStore"
 import { useUserStore } from "@/store/userStore"
-import { onMounted, ref } from "vue"
+import { onMounted, ref, watch } from "vue"
+const gameStore = useGameStore()
 const pagesLink = [
     { name: "Account", link: "/settings/account" },
     { name: "Billing", link: "/settings/billing" },
     { name: "Invoices", link: "/settings/invoices" },
 ]
 const userStore = useUserStore()
+
 const invoices = ref([
     {
         _id: 1,
@@ -148,8 +151,4 @@ const invoices = ref([
         status: "success",
     },
 ])
-onMounted(async () => {
-    //  const result = await userStore.loadFleetsHistory()
-    //  history.value = result
-})
 </script>

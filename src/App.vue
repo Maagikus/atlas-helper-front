@@ -26,6 +26,7 @@ const fleets = ref([])
 provide("fleets", fleets)
 const authStore = useAuthStore()
 const userStore = useUserStore()
+const gameStore = useGameStore()
 
 const walletOptions = {
     wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter({ network: WalletAdapterNetwork.Mainnet })],
@@ -42,6 +43,9 @@ onBeforeMount(async () => {
 
         socket.emit("initGame", JSON.stringify({ key: user.walletPublicKey }))
     }
+})
+onMounted(() => {
+    gameStore.initSocketListeners()
 })
 // onBeforeMount(async () => {
 //     await authStore.checkUser()
