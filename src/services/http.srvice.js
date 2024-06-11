@@ -6,7 +6,7 @@ export class HttpClient {
     async request(url, options) {
         const requestOptions = {
             method: options.method,
-            headers: options.headers || { "Content-Type": "application/json", "Access-Control-Allow-Origin": `${import.meta.env.VITE_SOCKET_URL}` },
+            headers: options.headers || { "Content-Type": "application/json" },
             credentials: "include",
         }
 

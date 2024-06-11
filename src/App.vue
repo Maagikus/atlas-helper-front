@@ -41,8 +41,6 @@ onBeforeMount(async () => {
         const user = authStore.getUser
         //   await userStore.loadUserFleets(userKey)
         fleets.value = userStore.getUserFleets
-
-        socket.emit("initGame", JSON.stringify({ key: user.walletPublicKey }))
     }
 })
 onMounted(() => {

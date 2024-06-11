@@ -37,4 +37,16 @@
 </template>
 <script setup>
 import Chat from "@/components/AI/Chat.vue"
+import { onMounted } from "vue"
+import { socket } from "../socket"
+import { useAuthStore } from "@/store/authStore.js"
+
+const authStore = useAuthStore()
+
+onMounted(() => {
+    if (localStorage.getItem("token")) {
+        const user = authStore.getUser
+        socket.emit("initGame", JSON.stringify({ key: user.walletPublicKey }))
+    }
+})
 </script>

@@ -15,14 +15,17 @@ export const useAuthStore = defineStore("auth", {
     actions: {
         async login(data) {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
+            console.log("res", true)
+
             try {
                 const res = await httpClient.post("auth/login", data)
-
                 localStorage.setItem("token", JSON.stringify(res.accessToken))
                 this.isUserAuth = true
                 this.user = res.user
                 await router.push("/")
             } catch (e) {
+                console.log("res", false)
+
                 this.errors.push(e)
                 throw new Error(e)
             }
