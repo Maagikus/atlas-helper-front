@@ -63,7 +63,7 @@ import { useAuthStore } from "@/store/authStore.js"
 import { email, helpers, minLength, required } from "@vuelidate/validators"
 import { INCORRECT_EMAIL, REQUIRED_FILD, TOO_SHORT_PASSWORD } from "@/helpers/messages.helper.js"
 import useVuelidate from "@vuelidate/core"
-
+let test
 const authStore = useAuthStore()
 
 const loginForm = reactive({
