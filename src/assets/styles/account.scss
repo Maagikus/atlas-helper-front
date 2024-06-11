@@ -1,0 +1,171 @@
+.account {
+
+	// .account__body
+	&__body {
+		display: flex;
+		@include adaptiveValue("gap", 54, 20, 1920, 1300);
+		// flex-wrap: wrap;
+
+		@media (max-width:em(1300)) {
+			flex-direction: column;
+			gap: rem(15);
+		}
+	}
+
+	// .account__item
+	&__item {
+		flex: 0 1 50%;
+		box-shadow: 1px 2px 10px 1px rgba(0, 0, 0, 0.25);
+		background: rgba(247, 247, 247, 0.41);
+		@include adaptiveValue("padding-top", 35, 15, 1920, 1300);
+		@include adaptiveValue("padding-bottom", 40, 15, 1920, 1300);
+		@include adaptiveValue("padding-left", 47, 15, 1920, 1300);
+		@include adaptiveValue("padding-right", 47, 15, 1920, 1300);
+		display: flex;
+		flex-direction: column;
+		gap: rem(25);
+
+		@media (max-width: em(1300)) {
+			padding: 15px 15px;
+		}
+	}
+}
+
+.item-personal {
+
+	// .item-personal__email
+	&__email {
+		display: flex;
+		flex-direction: column;
+		gap: rem(15)
+	}
+
+	// .item-personal__title
+	&__title {
+		color: rgb(0, 0, 0);
+		font-family: Inter;
+		font-size: rem(14);
+		font-weight: 400;
+		line-height: math.div(14, 17);
+	}
+
+	// .item-personal__input
+	&__input {}
+
+	// .item-personal__button
+	&__button {
+		@include adaptiveValue("padding-top", 8, 8);
+		@include adaptiveValue("padding-bottom", 8, 8);
+		@include adaptiveValue("padding-left", 46, 15);
+		@include adaptiveValue("padding-right", 46, 15);
+		border-radius: 20px;
+		align-self: flex-start;
+	}
+
+	// .item-personal__password
+	&__password {
+		display: flex;
+		flex-direction: column;
+		gap: rem(15)
+	}
+
+	// .item-personal__wallet
+	&__wallet {
+		display: flex;
+		flex-direction: column;
+		gap: rem(15)
+	}
+}
+
+.input {}
+
+.button {}
+
+.item-telegram {
+
+	// .item-telegram__header
+	&__header {}
+
+	// .item-telegram__form
+	&__form {
+		display: flex;
+		flex-direction: column;
+		gap: rem(15);
+	}
+
+	// .item-telegram__title
+	&__title {
+		color: rgb(0, 0, 0);
+		font-family: Inter;
+		font-size: rem(14);
+		font-weight: 400;
+		line-height: math.div(14, 17);
+	}
+
+	// .item-telegram__input
+	&__input {}
+
+	// .item-telegram__options
+	&__options {
+		display: flex;
+		flex-direction: column;
+		gap: rem(10)
+	}
+
+	// .item-telegram__button
+	&__button {
+		@include adaptiveValue("padding-top", 8, 8);
+		@include adaptiveValue("padding-bottom", 8, 8);
+		@include adaptiveValue("padding-left", 46, 15);
+		@include adaptiveValue("padding-right", 46, 15);
+		border-radius: 20px;
+		align-self: flex-start;
+	}
+}
+
+.options {}
+
+
+
+.options {
+
+	// .options__checkbox
+	&__checkbox {}
+
+	// .options__input
+	&__input {
+		&:checked+.checkbox__label:before {
+			background: rgb(33, 148, 255);
+			border: 1.5px solid #fff;
+		}
+	}
+
+	// .options__label
+	&__label {
+		width: 200px;
+		flex-direction: row-reverse;
+		justify-content: space-between;
+		// flex-direction: row-reverse;
+
+		&:before {
+			content: "";
+			align-self: flex-start;
+			flex: 0 0 20px;
+			width: 20px;
+			height: 20px;
+			border: 1.5px solid rgb(33, 148, 255);
+			background: #fff;
+		}
+	}
+
+	// .options__text
+	&__text {
+		color: rgb(0, 0, 0);
+		font-family: Inter;
+		font-size: rem(16);
+		font-weight: 400;
+		line-height: 15px;
+		letter-spacing: 0%;
+		text-align: left;
+	}
+}

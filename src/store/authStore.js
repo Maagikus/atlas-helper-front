@@ -43,7 +43,7 @@ export const useAuthStore = defineStore("auth", {
         async logout() {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
-                const res = await httpClient.post("auth/logout")
+                await httpClient.post("auth/logout")
                 localStorage.removeItem("token")
                 this.isUserAuth = false
                 this.user = {}
@@ -72,7 +72,9 @@ export const useAuthStore = defineStore("auth", {
                 localStorage.setItem("token", JSON.stringify(data.accessToken))
                 this.isUserAuth = true
                 this.user = data.user
+                return
             } catch (e) {
+                console.log("e", e)
                 this.isUserAuth = false
                 this.user = {}
             }

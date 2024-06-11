@@ -1,0 +1,161 @@
+.invoices {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+	gap: rem(36);
+}
+
+.history-fleet {
+
+	// .history-fleet__filter
+	&__filter {}
+}
+
+.filter {}
+
+.invoices-history-table {
+
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+	border-collapse: collapse;
+	gap: rem(19.14);
+
+	// width: 100%;
+
+
+	@media (max-width: em(600)) {
+		border: 0;
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		gap: rem(10);
+	}
+
+	&__header {
+		background: rgba(217, 217, 217, 0.27);
+
+		@media (max-width: em(600)) {
+			border: none;
+			clip: rect(0 0 0 0);
+			height: 1px;
+			margin: -1px;
+			overflow: hidden;
+			padding: 0;
+			position: absolute;
+			width: 1px;
+		}
+
+
+		&-row {
+			display: grid;
+			grid-template-columns: repeat(6, 1fr);
+			padding: 10.13px 0px;
+
+			@media (max-width: em(600)) {
+				// border-bottom: 3px solid #ddd;
+				display: block;
+				// margin-bottom: .625em;
+			}
+		}
+
+		&-item {
+			color: rgb(0, 0, 0);
+			font-family: Inter;
+			font-size: rem(18);
+			@include adaptiveValue("font-size", 18, 16);
+			font-weight: 400;
+			line-height: math.div(18, 22);
+
+
+		}
+	}
+
+	&__row {
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+		padding: 7.88px 0px 7.88px 0px;
+		border-radius: 15px;
+
+		background: rgba(202, 230, 255, 0.27);
+
+		@media (max-width: em(600)) {
+			border-radius: 5px;
+			// border-bottom: 3px solid #ddd;
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+			padding: 10px 10px;
+			// margin-bottom: .625em;
+		}
+
+		&-red {
+			background: rgba(255, 0, 0, 0.27);
+		}
+
+		&:nth-child(even) {
+			background: rgba(202, 230, 255, 0.27);
+			// background-color: #f9f9f9;
+		}
+
+
+	}
+
+
+	&__item {
+		text-align: center;
+		color: rgb(0, 0, 0);
+		font-family: Inter;
+
+		@include adaptiveValue("font-size", 16, 13);
+		font-weight: 400;
+		line-height: math.div(19, 16);
+
+
+
+		@media (max-width: em(600)) {
+			display: flex;
+			justify-content: space-between;
+			font-size: .8em;
+			text-align: right;
+
+		}
+
+		&:last-child {
+			@media (max-width: em(600)) {
+				// align-items: center;
+				// justify-content: center;
+			}
+		}
+
+		a {
+			color: #007BFF;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+		&::before {
+			@media (max-width: em(600)) {
+				content: attr(data-label);
+				text-align: left;
+
+				font-weight: 400;
+				@include adaptiveValue("font-size", 18, 13);
+
+			}
+		}
+	}
+
+	&__link {}
+}
+
+.history-table {
+
+	// .history-table__row-red
+	&__row-red {}
+}
