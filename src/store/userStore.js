@@ -10,21 +10,29 @@ export const useUserStore = defineStore("users", {
         userKey: "",
         user: useAuthStore().getUser,
         errors: [],
+        fleetsHistory: [],
     }),
     getters: {
         getUserKey: (state) => state.userKey,
         getUser: (state) => state.user,
         getUserFleets: (state) => state.userFleets,
         getResources: (state) => state.resources,
+        getHistory: (state) => state.fleetsHistory,
     },
     actions: {
         setUserKey(key) {
             this.userKey = key
         },
         updateFleetState(fleetName, state) {
-            console.log("fleetName", fleetName, "State", state)
             const index = this.userFleets.findIndex((i) => i.fleetName === fleetName)
             if (index != -1) this.userFleets[index].fleetState = state
+        },
+        updateUserHistory(newItem) {
+            const index = this.fleetsHistory.findIndex((item) => item._id === newItem._id)
+            if (index === -1) {
+                this.fleetsHistory.push(newItem)
+            }
+            this.fleetsHistory[index] = newItem
         },
         async setUserWalletPublicKey(data) {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
@@ -40,7 +48,7 @@ export const useUserStore = defineStore("users", {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
                 const res = await httpClient.get(`game/getAllFleet?key=${encodeURIComponent(userKey)}`)
-                console.log(res)
+
                 //  res.fleets.forEach((element) => {
                 //      console.log("element", element)
                 //      this.userFleets.push(element.fleetName)
@@ -55,7 +63,7 @@ export const useUserStore = defineStore("users", {
             const httpClient = new HttpClient(import.meta.env.VITE_SOCKET_URL)
             try {
                 const history = await httpClient.get(`game/history/${userId}/fleetHistory`)
-                return history
+                this.fleetsHistory = history
             } catch (error) {
                 console.error(error)
             }

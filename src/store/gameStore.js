@@ -34,9 +34,12 @@ export const useGameStore = defineStore("game", {
             })
             socket.on("updateFleetState", (mess) => {
                 const res = JSON.parse(mess)
-                console.log("res", res)
                 useUserStore().updateFleetState(res.fleet, res.state)
-                console.log("updateFleetState", res)
+            })
+            socket.on("updateFleetHistory", (mess) => {
+                const newItem = JSON.parse(mess)
+
+                useUserStore().updateUserHistory(newItem)
             })
             socket.on("warp", (mess) => {
                 const res = JSON.parse(mess)

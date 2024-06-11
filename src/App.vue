@@ -1,6 +1,7 @@
 <template>
     <div class="app">
         <!-- <KeyModals :should-show-modal="shouldShowModal"></KeyModals> -->
+
         <Header></Header>
         <router-view></router-view>
     </div>

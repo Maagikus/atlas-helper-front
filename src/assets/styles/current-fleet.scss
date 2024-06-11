@@ -151,16 +151,16 @@
 			background: rgba(255, 0, 0, 0.27);
 		}
 
-		&:nth-child(even) {
-			background: rgba(202, 230, 255, 0.27);
-			// background-color: #f9f9f9;
-		}
-
-
+		// &:nth-child(even) {
+		// 	background: rgba(202, 230, 255, 0.27);
+		// }
 	}
 
-
 	&__item {
+		&-link {
+			cursor: pointer;
+		}
+
 		text-align: center;
 		color: rgb(0, 0, 0);
 		font-family: Inter;

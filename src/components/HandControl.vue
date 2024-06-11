@@ -271,6 +271,8 @@ const form = reactive({
     resource: resources.value[0],
     fleet: fleets.value[0],
     planet: "",
+    userId: userStore.getUser.id,
+    fleetId: null,
 })
 const formForTransfer = reactive({
     loop: "",
@@ -296,10 +298,13 @@ const formForTransfer = reactive({
     resourceValueAtDestination: "",
     fuelAtStartingPoint: "",
     fuelAtDestination: "",
+    userId: userStore.getUser.id,
+    fleetId: null,
 })
 const settingsForTransfer = ref([])
 const settingForMining = ref([])
 const setMiningSettings = (dataForMining) => {
+    const fleetId = userStore.getUserFleets.find((i) => i.fleetName === dataForMining.fleet).fleetKey
     const data = {
         loop: dataForMining.loop,
         key: authStore.getUser.walletPublicKey,
@@ -307,11 +312,14 @@ const setMiningSettings = (dataForMining) => {
         resource: dataForMining.resource,
         fleet: dataForMining.fleet,
         planet: dataForMining.planet,
+        userId: authStore.getUser.id,
+        fleetId,
     }
     settingForMining.value = [...settingForMining.value, data]
     console.log(settingForMining.value)
 }
 const setSettings = (dataForSending) => {
+    const fleetId = userStore.getUserFleets.find((i) => i.fleetName === dataForSending.fleet).fleetKey
     const data = {
         fleet: dataForSending.fleet,
         priorityFee: dataForSending.feeToTransaction,
@@ -326,6 +334,8 @@ const setSettings = (dataForSending) => {
         forwardCoordForSubWarp: dataForSending.forwardCoordForSubWarp,
         backCoordForWarp: dataForSending.backCoordForWarp,
         backCoordForSubWarp: dataForSending.backCoordForSubWarp,
+        userId: authStore.getUser.id,
+        fleetId,
     }
     settingsForTransfer.value = [...settingsForTransfer.value, data]
     console.log(settingsForTransfer.value)
