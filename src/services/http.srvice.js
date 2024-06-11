@@ -6,7 +6,7 @@ export class HttpClient {
     async request(url, options) {
         const requestOptions = {
             method: options.method,
-            headers: options.headers || { "Content-Type": "application/json" },
+            headers: options.headers || { "Content-Type": "application/json", "Access-Control-Allow-Origin": `${import.meta.env.VITE_SOCKET_URL}` },
             credentials: "include",
         }
 
@@ -39,7 +39,7 @@ export class HttpClient {
             let token = JSON.parse(localStorage.getItem("token"))
 
             if (token) {
-                return { Authorization: "Bearer " + token, "Content-Type": "application/json" }
+                return { "Access-Control-Allow-Origin": `${import.meta.env.VITE_SOCKET_URL}`, Authorization: "Bearer " + token, "Content-Type": "application/json" }
             }
         }
         const url = `${this.baseUrl}/${endpoint}`
