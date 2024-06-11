@@ -220,6 +220,16 @@
 		}
 
 		@media (any-hover: hover) {
+			.tooltip {
+				&__polygon {
+					bottom: 70px;
+				}
+
+				// visibility: inherit;
+				// opacity: 1;
+			}
+
+
 			&:hover {
 				.tooltip {
 					visibility: inherit;
