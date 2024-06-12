@@ -37,16 +37,28 @@
 </template>
 <script setup>
 import Chat from "@/components/AI/Chat.vue"
-import { onMounted } from "vue"
+import { onMounted, watch } from "vue"
 import { socket } from "../socket"
 import { useAuthStore } from "@/store/authStore.js"
 
 const authStore = useAuthStore()
+const token = localStorage.getItem("token")
 
 onMounted(() => {
-    if (localStorage.getItem("token")) {
+    if (token) {
         const user = authStore.getUser
-        socket.emit("initGame", JSON.stringify({ key: user.walletPublicKey }))
+        const dataForInitGame = JSON.stringify({ key: user.walletPublicKey })
+        socket.emit("initGame", dataForInitGame)
     }
 })
+watch(
+    () => token,
+    (newValue) => {
+        if (newValue) {
+            const user = authStore.getUser
+            const dataForInitGame = JSON.stringify({ key: user.walletPublicKey })
+            socket.emit("initGame", dataForInitGame)
+        }
+    }
+)
 </script>
