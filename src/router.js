@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router"
+import { createRouter, createWebHashHistory, createWebHistory } from "vue-router"
 // import ProcessStatus from "@/components/ProcessStatus.vue"
 import StartedPage from "@/components/StartedPage.vue"
 import Login from "@/components/Login.vue"
@@ -63,6 +63,7 @@ const routes = [
             isRequiredAuth: true,
         },
     },
+
     {
         path: "/fleets",
         component: CurrentFleetPage,
@@ -81,6 +82,7 @@ const routes = [
             isRequiredAuth: true,
         },
     },
+
     {
         path: "/login",
         name: "Login",
@@ -89,6 +91,7 @@ const routes = [
             isRequiredAuth: false,
         },
     },
+
     {
         path: "/registration",
         name: "Registration",
@@ -99,7 +102,7 @@ const routes = [
     },
 ]
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
 })
 
