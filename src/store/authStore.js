@@ -1,11 +1,12 @@
 import { defineStore } from "pinia"
 import { HttpClient } from "@/services/http.srvice.js"
 import router from "@/router.js"
+import { useUserStore } from "@/store/userStore.js"
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
         isUserAuth: false,
-        user: {},
+        user: null,
         errors: [],
     }),
     getters: {
@@ -19,15 +20,16 @@ export const useAuthStore = defineStore("auth", {
 
             try {
                 const res = await httpClient.post("auth/login", data)
+                console.log("res 1", res)
                 localStorage.setItem("token", JSON.stringify(res.accessToken))
                 this.isUserAuth = true
                 this.user = res.user
                 await router.push("/")
             } catch (e) {
-                console.log("res", false)
+                console.log("res 2", e)
 
-                this.errors.push(e)
-                throw new Error(e)
+                // this.errors.push(e)
+                // throw new Error(e)
             }
         },
         async registration(data) {
@@ -37,7 +39,7 @@ export const useAuthStore = defineStore("auth", {
                 localStorage.setItem("token", JSON.stringify(res.accessToken))
                 this.isUserAuth = true
                 this.user = res.user
-                await router.push("/")
+                await router.push("/dashboard")
             } catch (e) {
                 this.errors.push(e)
                 throw new Error(e)
@@ -56,6 +58,7 @@ export const useAuthStore = defineStore("auth", {
             }
         },
         async checkUser() {
+            console.log("checkUser")
             try {
                 const result = await fetch(`${import.meta.env.VITE_SOCKET_URL}/auth/refresh`, {
                     method: "GET",
@@ -69,15 +72,17 @@ export const useAuthStore = defineStore("auth", {
                 if (!result.ok) {
                     this.isUserAuth = false
                     this.user = {}
+                    const userStore = useUserStore()
+                    userStore.setError({ status: result.status, text: result.statusText })
+
                     return
                 }
                 const data = await result.json()
                 localStorage.setItem("token", JSON.stringify(data.accessToken))
                 this.isUserAuth = true
                 this.user = data.user
-                return
             } catch (e) {
-                console.log("e", e)
+                console.log(e)
                 this.isUserAuth = false
                 this.user = {}
             }

@@ -53,6 +53,6 @@ const props = defineProps({
     fleet: Object,
 })
 onMounted(() => {
-    console.log("fleet", props?.fleet)
+    // console.log("fleet", props?.fleet)
 })
 </script>

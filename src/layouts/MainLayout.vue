@@ -6,7 +6,7 @@
                     <div class="navigation-general__body body-navigation">
                         <ul class="body-navigation__list">
                             <li class="body-navigation__item">
-                                <router-link to="/" class="body-navigation__link _icon-home"></router-link>
+                                <router-link to="/dashboard" class="body-navigation__link _icon-home"></router-link>
                             </li>
                             <!-- <li class="body-navigation__item">
                                 <router-link to="market" class="body-navigation__link"><img src="../assets/images/Market.svg" alt="market" /></router-link>
@@ -40,25 +40,51 @@ import Chat from "@/components/AI/Chat.vue"
 import { onMounted, watch } from "vue"
 import { socket } from "../socket"
 import { useAuthStore } from "@/store/authStore.js"
-
-const authStore = useAuthStore()
+import { useDocumentVisibility } from "@vueuse/core"
 const token = localStorage.getItem("token")
 
+const authStore = useAuthStore()
+const visibility = useDocumentVisibility()
+watch(
+    () => visibility.value,
+    (newValue) => {
+        if (newValue === "visible") {
+            const user = authStore.getUser
+            if (user) {
+                const dataForInitGame = JSON.stringify({ key: user.walletPublicKey })
+                socket.emit("initGame", dataForInitGame)
+            }
+        }
+    }
+)
+
 onMounted(() => {
-    if (token) {
-        const user = authStore.getUser
+    console.log("onMounted1")
+    const user = authStore.getUser
+    if (user) {
         const dataForInitGame = JSON.stringify({ key: user.walletPublicKey })
         socket.emit("initGame", dataForInitGame)
     }
 })
 watch(
-    () => token,
-    (newValue) => {
-        if (newValue) {
-            const user = authStore.getUser
-            const dataForInitGame = JSON.stringify({ key: user.walletPublicKey })
+    () => authStore.getUser,
+    (newUser) => {
+        console.log("watch2")
+        if (newUser) {
+            const dataForInitGame = JSON.stringify({ key: newUser.walletPublicKey })
             socket.emit("initGame", dataForInitGame)
         }
     }
 )
+// watch(
+//     () => token,
+//     (newValue) => {
+//         console.log("initGame2")
+//
+//         const user = authStore.getUser
+//         const dataForInitGame = JSON.stringify({ key: user.walletPublicKey })
+//
+//         socket.emit("initGame", dataForInitGame)
+//     }
+// )
 </script>

@@ -47,9 +47,28 @@ export const useGameStore = defineStore("game", {
 
                 //  console.log("dock", res)
             })
+            socket.on("connect_error", (error) => {
+                useUserStore().setError({ status: 500, text: error.message })
+            })
             socket.on("subwarp", (mess) => {
                 const res = JSON.parse(mess)
                 //  console.log("dock", res)
+            })
+            socket.on("error", (mess) => {
+                const error = JSON.parse(mess)
+                console.log(error)
+
+                useUserStore().setError(error)
+            })
+            socket.on("initGame", (mess) => {
+                const { isInited } = mess
+                if (!isInited) {
+                    const user = useAuthStore().getUser
+                    if (user) {
+                        const dataForInitGame = JSON.stringify({ key: user.walletPublicKey })
+                        socket.emit("initGame", dataForInitGame)
+                    }
+                }
             })
         },
         addProvider(provider) {
@@ -166,7 +185,11 @@ export const useGameStore = defineStore("game", {
             // }
 
             if (this.serverPlay) {
-                socket.emit("dock", JSON.stringify(data))
+                try {
+                    socket.emit("dock", JSON.stringify(data))
+                } catch (e) {
+                    console.log("dockError", e)
+                }
             }
             // else {
             //     const { program, craftingProgram, wallet, connection, provider } = useWorkspace()

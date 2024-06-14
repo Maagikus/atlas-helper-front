@@ -1,3 +1,5 @@
+import { useUserStore } from "@/store/userStore.js"
+
 export class HttpClient {
     constructor(baseUrl) {
         this.baseUrl = baseUrl
@@ -28,6 +30,8 @@ export class HttpClient {
         const responseData = await response.json()
 
         if (!response.ok) {
+            const userStore = useUserStore()
+            userStore.setError({ status: response.status, text: responseData.message })
             throw new Error(responseData.message || "Something went wrong")
         }
 

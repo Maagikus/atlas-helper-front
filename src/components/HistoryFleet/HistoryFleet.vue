@@ -37,14 +37,15 @@ import Pagination from "@/components/Pagination.vue"
 import FleetHistoryDetailModal from "@/components/modals/FleetHistoryDetailModal.vue"
 import { useUserStore } from "@/store/userStore"
 
-// const props = defineProps({
-//     history: Array,
-// })
-const modalDataSymbol = Symbol()
-const userStore = useUserStore()
+const props = defineProps({
+    history: {
+        type: Array,
+        required: true,
+    },
+})
+
 const modalOpen = ref(false)
 const modalItem = ref(null)
-const history = ref([])
 
 const filters = ref({
     Operation: ["dock", "mining", "undock", "warp move", "subwarp move"],
@@ -57,9 +58,9 @@ const openModal = (item) => {
 }
 const filteredHistory = computed(() => {
     if (selectedFilters.value.length === 0) {
-        return history.value
+        return props.history
     }
-    return history.value.filter((item) => {
+    return props.history.filter((item) => {
         const operationFilters = selectedFilters.value.filter((filter) => filters.value.Operation.includes(filter))
         const statusFilters = selectedFilters.value.filter((filter) => filters.value.Status.includes(filter))
 
@@ -81,27 +82,12 @@ const paginatedHistory = computed(() => {
 const updateFilters = (newFilters) => {
     selectedFilters.value = newFilters
 }
-onMounted(async () => {
-    await userStore.loadFleetsHistory()
-    history.value = userStore.getHistory
-})
+
 watch(
-    () => userStore.getHistory,
-    (newValue) => {
-        history.value = newValue
-    }
-)
-watch(
-    () => history.value.length,
+    () => props.history.length,
     (newLength) => {
         updateCount(newLength)
     },
     { deep: true }
 )
-// watch(
-//     () => props.history,
-//     (newValue) => {
-//         dataForHistoryTble.value = newValue
-//     }
-// )
 </script>

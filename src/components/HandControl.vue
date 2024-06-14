@@ -271,7 +271,7 @@ const form = reactive({
     resource: resources.value[0],
     fleet: fleets.value[0],
     planet: "",
-    userId: userStore.getUser.id,
+    userId: authStore.getUser.id,
     fleetId: null,
 })
 const formForTransfer = reactive({
@@ -298,7 +298,7 @@ const formForTransfer = reactive({
     resourceValueAtDestination: "",
     fuelAtStartingPoint: "",
     fuelAtDestination: "",
-    userId: userStore.getUser.id,
+    userId: authStore.getUser.id,
     fleetId: null,
 })
 const settingsForTransfer = ref([])
@@ -373,7 +373,17 @@ socket.on("message", (response) => {
     if (!responseData.success) {
         successMessage.value = ""
         errorMessage.value = `Перейди в исходную точку в игре ${responseData.error}`
-        console.error("Ошибка сервера:", responseData.error)
+        if (responseData.error) {
+            userStore.setError({ status: 500, text: responseData.error })
+        }
+    }
+})
+socket.on("move", (response) => {
+    const responseData = JSON.parse(response)
+    if (!responseData.success) {
+        if (responseData.error) {
+            userStore.setError({ status: 500, text: responseData.error })
+        }
     }
 })
 const onSubmit = (data) => {
@@ -423,8 +433,9 @@ onMounted(async () => {
     }
 })
 onMounted(async () => {
-    const userKey = authStore.getUser.walletPublicKey
-    if (userKey) {
+    const user = authStore.getUser
+    if (user) {
+        const userKey = user.walletPublicKey
         await userStore.loadResources(userKey)
         resources.value = userStore.getResources
         fleets.value = userStore.getUserFleets

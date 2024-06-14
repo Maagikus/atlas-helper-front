@@ -1,7 +1,7 @@
 .general {
 
 	// padding: 85px 0px 0px 0px;
-	position: relative;
+	//position: relative;
 	// display: block;
 
 
@@ -15,7 +15,11 @@
 	// .general__navigation
 	&__navigation {
 		flex: 0 0 7.61%;
+    @media (min-width: em(1980)) {
+        flex: 0 0 100px;
 
+
+    }
 		@media (max-width:$mobile) {
 			flex: 0 0 40px;
 		}
@@ -106,7 +110,11 @@
 		height: 100%;
 		top: 0;
 		left: 0;
+        @media (min-width: em(1980)) {
+            width: 100px;
 
+
+        }
 		@media (max-width:$mobile) {
 			width: 40px;
 		}

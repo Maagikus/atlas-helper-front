@@ -10,6 +10,7 @@ export const useUserStore = defineStore("users", {
         userKey: "",
         user: useAuthStore().getUser,
         errors: [],
+        error: [],
         fleetsHistory: [],
     }),
     getters: {
@@ -18,8 +19,15 @@ export const useUserStore = defineStore("users", {
         getUserFleets: (state) => state.userFleets,
         getResources: (state) => state.resources,
         getHistory: (state) => state.fleetsHistory,
+        getError: (state) => state.error,
     },
     actions: {
+        setError(error) {
+            this.error = [error, ...this.error]
+        },
+        removeError() {
+            this.error.pop()
+        },
         setUserKey(key) {
             this.userKey = key
         },
@@ -67,6 +75,12 @@ export const useUserStore = defineStore("users", {
             } catch (error) {
                 console.error(error)
             }
+        },
+        async getFleetHistoryByFleetId(id) {
+            if (!this.fleetsHistory.length) {
+                await this.loadFleetsHistory()
+            }
+            return this.fleetsHistory.filter((item) => item.fleetId === id)
         },
         async loadFleetsHistoryByFleetId(fleetName) {
             const { fleetKey } = this.userFleets.find((i) => i.fleetName === fleetName)

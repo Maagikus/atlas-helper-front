@@ -38,6 +38,7 @@
 <script setup>
 import { useAuthStore } from "@/store/authStore.js"
 import { useChatStore } from "@/store/chatStore.js"
+import { socket } from "@/socket.js"
 
 const authStore = useAuthStore()
 const chatStore = useChatStore()
@@ -51,9 +52,17 @@ const closeModal = () => {
     emit("update:modelValue", false)
 }
 const repeatAction = async (request) => {
-    const user = authStore.getUser
-    const dataForSending = { userId: user.id, key: authStore.getUser.walletPublicKey, content: props.item.detailt.request, isAssistant: false }
-    await chatStore.sendMessage(dataForSending)
-    closeModal()
+    if (props.item.detailt?.dataForRepeating) {
+        const sockets = {
+            Mpvement: "move",
+            Mining: "message",
+        }
+        socket.emit(sockets[props.item.detailt.process], JSON.stringify(props.item.detailt.dataForRepeating))
+    } else {
+        const user = authStore.getUser
+        const dataForSending = { userId: user.id, key: authStore.getUser.walletPublicKey, content: props.item.detailt.request, isAssistant: false }
+        await chatStore.sendMessage(dataForSending)
+        closeModal()
+    }
 }
 </script>
