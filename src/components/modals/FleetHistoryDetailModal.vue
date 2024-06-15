@@ -54,7 +54,7 @@ const closeModal = () => {
 const repeatAction = async (request) => {
     if (props.item.detailt?.dataForRepeating) {
         const sockets = {
-            Mpvement: "move",
+            Movement: "move",
             Mining: "message",
         }
         socket.emit(sockets[props.item.detailt.process], JSON.stringify(props.item.detailt.dataForRepeating))
