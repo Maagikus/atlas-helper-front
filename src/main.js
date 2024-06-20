@@ -7,7 +7,7 @@ import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
 import router from "@/router.js"
 import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets"
 import { createPinia } from "pinia"
-
+import PrimeVue from "primevue/config"
 const walletOptions = {
     wallets: [new SolflareWalletAdapter({ network: WalletAdapterNetwork.Mainnet })],
     autoConnect: true,

@@ -1,32 +1,35 @@
 <template>
-    <div class="history">
-        <div class="history-fleet__filter filter">
-            <Filter :modelValue="selectedFilters" :filters="filters" @update:modelValue="updateFilters"></Filter>
-        </div>
-        <table class="history-table">
-            <thead class="history-table__header">
-                <tr class="history-table__header-row">
-                    <th class="history-table__header-item">ID</th>
-                    <th class="history-table__header-item">Exact Date&amp;Time</th>
-                    <th class="history-table__header-item">Operation</th>
-                    <th class="history-table__header-item">Status</th>
-                    <th class="history-table__header-item"></th>
-                </tr>
-            </thead>
-            <tbody class="history-table__body">
-                <tr v-for="(item, index) in paginatedHistory" :key="index" class="history-table__row" :class="{ 'history-table__row-red': item.detailt.error }">
-                    <td data-label="ID" class="history-table__item">{{ `# ${item._id.slice(-4)}` }}</td>
-                    <td data-label="Exact Date&amp;Time" class="history-table__item">{{ formatDate(item.createdAt) }}</td>
-                    <td data-label="Operation" class="history-table__item">{{ item.operation }}</td>
-                    <td data-label="Status" class="history-table__item">{{ item.status }}</td>
+    <!--    <div class="history">-->
+    <!--        <div class="history-fleet__filter filter">-->
+    <!--            <Filter :modelValue="selectedFilters" :filters="filters" @update:modelValue="updateFilters"></Filter>-->
+    <!--        </div>-->
+    <!--        <table class="history-table">-->
+    <!--            <thead class="history-table__header">-->
+    <!--                <tr class="history-table__header-row">-->
+    <!--                    <th class="history-table__header-item">ID</th>-->
+    <!--                    <th class="history-table__header-item">Exact Date&amp;Time</th>-->
+    <!--                    <th class="history-table__header-item">Fleet Name</th>-->
+    <!--                    <th class="history-table__header-item">Operation</th>-->
+    <!--                    <th class="history-table__header-item">Status</th>-->
+    <!--                    <th class="history-table__header-item"></th>-->
+    <!--                </tr>-->
+    <!--            </thead>-->
+    <!--            <tbody class="history-table__body">-->
+    <!--                <tr v-for="(item, index) in paginatedHistory" :key="index" class="history-table__row" :class="{ 'history-table__row-red': item.detailt.error }">-->
+    <!--                    <td data-label="ID" class="history-table__item">{{ `# ${item._id.slice(-4)}` }}</td>-->
+    <!--                    <td data-label="Exact Date&amp;Time" class="history-table__item">{{ formatDate(item.createdAt) }}</td>-->
+    <!--                    <td data-label="Exact Date&amp;Time" class="history-table__item">{{ item.fleetName }}</td>-->
+    <!--                    <td data-label="Operation" class="history-table__item">{{ item.operation }}</td>-->
+    <!--                    <td data-label="Status" class="history-table__item">{{ item.status }}</td>-->
 
-                    <td class="history-table__item history-table__item-link _icon-out" @click="openModal(item)"></td>
-                    <FleetHistoryDetailModal v-if="modalOpen" v-model="modalOpen" :item="modalItem"></FleetHistoryDetailModal>
-                </tr>
-            </tbody>
-        </table>
-        <Pagination v-if="filteredHistory.length > 5" :page="page" :gaps="gaps" :totalPages="totalPages" @set-page="setPage"></Pagination>
-    </div>
+    <!--                    <td class="history-table__item history-table__item-link _icon-out" @click="openModal(item)"></td>-->
+    <!--                    <FleetHistoryDetailModal v-if="modalOpen" v-model="modalOpen" :item="modalItem"></FleetHistoryDetailModal>-->
+    <!--                </tr>-->
+    <!--            </tbody>-->
+    <!--        </table>-->
+    <!--        <Pagination v-if="filteredHistory.length > 5" :page="page" :gaps="gaps" :totalPages="totalPages" @set-page="setPage"></Pagination>-->
+    <!--    </div>-->
+    <HistoryFleet :history="history"></HistoryFleet>
 </template>
 <script setup>
 import { formatDate } from "@/helpers/dateFormater.js"
@@ -36,6 +39,7 @@ import usePagination from "@/helpers/usePagination.js"
 import Pagination from "@/components/Pagination.vue"
 import FleetHistoryDetailModal from "@/components/modals/FleetHistoryDetailModal.vue"
 import { useUserStore } from "@/store/userStore"
+import HistoryFleet from "@/components/HistoryFleet/HistoryFleet.vue"
 
 // const props = defineProps({
 //     history: Array,
@@ -83,12 +87,16 @@ const updateFilters = (newFilters) => {
 }
 onMounted(async () => {
     await userStore.loadFleetsHistory()
-    history.value = userStore.getHistory
+    history.value = userStore.getHistory.map((i) => {
+        return { ...i, fleetName: userStore.getUserFleets.find((j) => j.fleetKey === i.fleetId).fleetName }
+    })
 })
 watch(
     () => userStore.getHistory,
     (newValue) => {
-        history.value = newValue
+        history.value = newValue.map((i) => {
+            return { ...i, fleetName: userStore.getUserFleets.find((j) => j.fleetKey === i.fleetId).fleetName }
+        })
     }
 )
 watch(

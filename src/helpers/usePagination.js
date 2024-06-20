@@ -1,4 +1,4 @@
-import { ref, reactive, watch, watchEffect, computed } from "vue"
+import { ref, reactive, watch, watchEffect, computed, onMounted } from "vue"
 
 const usePagination = ({ contentPerPage, count }) => {
     const page = ref(1)
@@ -10,6 +10,7 @@ const usePagination = ({ contentPerPage, count }) => {
 
     // Calculate the total number of pages
     const pageCount = ref(Math.ceil(count / contentPerPage))
+    console.log("pageCount", pageCount.value)
 
     // Calculate the index of the last item on the current page
     const lastContentIndex = computed(() => page.value * contentPerPage)
@@ -20,20 +21,29 @@ const usePagination = ({ contentPerPage, count }) => {
     // Generate pages between the first and last pages
     const pagesInBetween = ref([])
 
-    const updatePagesInBetween = () => {
-        if (pageCount.value > 2) {
-            pagesInBetween.value = Array.from({ length: pageCount.value - 2 }, (_, i) => i + 2)
+    const updatePagesInBetween = (newValue) => {
+        if (newValue > 2) {
+            pagesInBetween.value = Array.from({ length: newValue - 2 }, (_, i) => i + 2)
         } else {
             pagesInBetween.value = []
         }
     }
-
+    onMounted(() => {
+        updatePagesInBetween(pageCount.value)
+    })
     // Update pagesInBetween when pageCount changes
-    watch(pageCount, updatePagesInBetween)
+    watch(
+        () => pageCount.value,
+        (newValue) => {
+            console.log("newValue", newValue)
+            updatePagesInBetween(newValue)
+        }
+    )
 
     // Update gaps and paginationGroup based on the current page
     watchEffect(() => {
         const currentLocation = pagesInBetween.value.indexOf(page.value)
+
         let paginationGroup = []
         let before = false
         let after = false
@@ -48,13 +58,8 @@ const usePagination = ({ contentPerPage, count }) => {
             paginationGroup = [page.value - 1, page.value, page.value + 1]
         }
 
-        if (pageCount.value <= 5) {
-            before = false
-            after = false
-        } else {
-            before = paginationGroup[0] > 2
-            after = paginationGroup[2] < pageCount.value - 1
-        }
+        before = paginationGroup[0] > 2
+        after = paginationGroup[2] < pageCount.value - 1
 
         gaps.before = before
         gaps.paginationGroup = paginationGroup

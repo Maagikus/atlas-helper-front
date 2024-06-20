@@ -33,7 +33,13 @@ export const useChatStore = defineStore("chat", {
 
                 if (data.content.intermediateSteps && data.content.intermediateSteps.process) {
                     console.log("data", data)
-                    const fleetId = useUserStore().getUserFleets.find((i) => i.fleetName === data.content.intermediateSteps.fleet).fleetKey
+                    const fleet = useUserStore().getUserFleets.find((i) => i.fleetName === data.content.intermediateSteps.fleet)
+                    if (!fleet) {
+                        useUserStore().setError({ status: 404, text: `cant find fleet with name ${data.content.intermediateSteps.fleet}` })
+                        return
+                    }
+                    const fleetId = fleet.fleetKey
+
                     console.log("fleetId", fleetId)
                     const dataForSending = { ...data.content.intermediateSteps, key: useAuthStore().getUser.walletPublicKey, userId: useAuthStore().getUser.id, fleetId }
                     const selectedFunction = processActions[dataForSending.process]

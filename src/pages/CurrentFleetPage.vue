@@ -47,7 +47,9 @@ onMounted(async () => {
     fleet.value = fleets.value.find((f) => f.fleetName === fleetName)
     const fleetId = fleet.value.fleetKey
     const result = await userStore.getFleetHistoryByFleetId(fleetId)
-    history.value = result
+    history.value = result.map((i) => {
+        return { ...i, fleetName: fleetName }
+    })
 })
 watch(
     () => userStore.getUserFleets,
@@ -60,7 +62,11 @@ watch(
     () => userStore.getHistory,
     async (newValue) => {
         const fleetId = fleet.value.fleetKey
-        history.value = await userStore.getFleetHistoryByFleetId(fleetId)
+        history.value = newValue
+            .filter((i) => i.fleetId === fleetId)
+            .map((i) => {
+                return { ...i, fleetName: fleetName }
+            })
     },
     { deep: true }
 )

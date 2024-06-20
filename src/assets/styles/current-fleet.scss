@@ -107,7 +107,7 @@
 
 		&-row {
 			display: grid;
-			grid-template-columns: repeat(5, 1fr);
+			grid-template-columns: repeat(6, 1fr);
 			padding: 10.13px 0px;
 
 			@media (max-width: em(600)) {
@@ -131,7 +131,7 @@
 
 	&__row {
 		display: grid;
-		grid-template-columns: repeat(5, 1fr);
+		grid-template-columns: repeat(6, 1fr);
 		padding: 7.88px 0px 7.88px 0px;
 		border-radius: 15px;
 

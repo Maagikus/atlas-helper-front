@@ -20,6 +20,8 @@
     </div>
 </template>
 <script setup>
+import { onMounted } from "vue"
+
 const emit = defineEmits(["set-page", "setPage"])
 const props = defineProps({
     page: Number,
@@ -29,4 +31,8 @@ const props = defineProps({
 const setPage = (item) => {
     emit("set-page", item)
 }
+onMounted(() => {
+    // console.log(props.totalPages)
+    // console.log(props.gaps)
+})
 </script>
