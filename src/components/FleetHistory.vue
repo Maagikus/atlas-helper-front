@@ -86,16 +86,27 @@ const updateFilters = (newFilters) => {
     selectedFilters.value = newFilters
 }
 onMounted(async () => {
-    await userStore.loadFleetsHistory()
-    history.value = userStore.getHistory.map((i) => {
-        return { ...i, fleetName: userStore.getUserFleets.find((j) => j.fleetKey === i.fleetId).fleetName }
-    })
+    try {
+        await userStore.loadFleetsHistory()
+        history.value = userStore.getHistory.map((i) => {
+            const currentFleet = userStore.getUserFleets.find((j) => j.fleetKey === i.fleetId)
+            console.log("currFleet", currFleet.fleetName)
+            const fleetName = currentFleet ? currentFleet.fleetName : "fleet eas deleted"
+
+            return { ...i, fleetName }
+        })
+    } catch (error) {
+        console.log("error", error)
+    }
 })
 watch(
     () => userStore.getHistory,
     (newValue) => {
         history.value = newValue.map((i) => {
-            return { ...i, fleetName: userStore.getUserFleets.find((j) => j.fleetKey === i.fleetId).fleetName }
+            const currentFleet = userStore.getUserFleets.find((j) => j.fleetKey === i.fleetId)
+            const fleetName = currentFleet ? currentFleet.fleetName : "fleet eas deleted"
+
+            return { ...i, fleetName }
         })
     }
 )

@@ -10,7 +10,6 @@ const usePagination = ({ contentPerPage, count }) => {
 
     // Calculate the total number of pages
     const pageCount = ref(Math.ceil(count / contentPerPage))
-    console.log("pageCount", pageCount.value)
 
     // Calculate the index of the last item on the current page
     const lastContentIndex = computed(() => page.value * contentPerPage)
@@ -35,7 +34,6 @@ const usePagination = ({ contentPerPage, count }) => {
     watch(
         () => pageCount.value,
         (newValue) => {
-            console.log("newValue", newValue)
             updatePagesInBetween(newValue)
         }
     )

@@ -101,6 +101,15 @@
 
 	}
 
+	&__control {
+		display: flex;
+		justify-content: space-around;
+	}
+
+	&__button {
+		background-color: #3c9bda;
+	}
+
 	&__message-assistant {
 		align-self: flex-start;
 

@@ -27,6 +27,54 @@ export const useChatStore = defineStore("chat", {
                 subwarp: gameStore.subWarp,
                 //  move: gameStore.moveTo,
             }
+            socket.on("validate-undock-request", (mess) => {
+                const data = JSON.parse(mess)
+                //  console.log("for validating", data)
+                //  if (!data) {
+                //      socket.emit("validate-undock-request", JSON.stringify({ isValid: false }))
+                //  }
+                this.messages.push({ content: data, isAssistant: true, confirmation: true })
+            })
+            socket.on("validate-dock-request", (mess) => {
+                const data = JSON.parse(mess)
+                //  console.log("for validating", data)
+                //  if (!data) {
+                //      socket.emit("validate-undock-request", JSON.stringify({ isValid: false }))
+                //  }
+                this.messages.push({ content: data, isAssistant: true, confirmation: true })
+            })
+            socket.on("validate-subwarp-request", (mess) => {
+                const data = JSON.parse(mess)
+                //  console.log("for validating", data)
+                //  if (!data) {
+                //      socket.emit("validate-undock-request", JSON.stringify({ isValid: false }))
+                //  }
+                this.messages.push({ content: data, isAssistant: true, confirmation: true })
+            })
+            socket.on("validate-transfer-request", (mess) => {
+                const data = JSON.parse(mess)
+                //  console.log("for validating", data)
+                //  if (!data) {
+                //      socket.emit("validate-undock-request", JSON.stringify({ isValid: false }))
+                //  }
+                this.messages.push({ content: data, isAssistant: true, confirmation: true })
+            })
+            socket.on("validate-mining-request", (mess) => {
+                const data = JSON.parse(mess)
+                //  console.log("for validating", data)
+                //  if (!data) {
+                //      socket.emit("validate-undock-request", JSON.stringify({ isValid: false }))
+                //  }
+                this.messages.push({ content: data, isAssistant: true, confirmation: true })
+            })
+            socket.on("validate-movement-request", (mess) => {
+                const data = JSON.parse(mess)
+                //  console.log("for validating", data)
+                //  if (!data) {
+                //      socket.emit("validate-undock-request", JSON.stringify({ isValid: false }))
+                //  }
+                this.messages.push({ content: data, isAssistant: true, confirmation: true })
+            })
             socket.on("ask", (mess) => {
                 const data = JSON.parse(mess)
                 console.log("data", data)
@@ -53,6 +101,19 @@ export const useChatStore = defineStore("chat", {
                 // console.log(data)
                 this.messages.push({ content: data.content.mess, isAssistant: true })
             })
+        },
+        async confirmAction(action, isValid, data) {
+            const actionsToConfirm = {
+                undock: "validate-undock-request",
+                dock: "validate-dock-request",
+                movement: "validate-movement-request",
+                mining: "validate-mining-request",
+                transfer: "validate-transfer-request",
+                subwarp: "validate-subwarp-request",
+            }
+
+            socket.emit(actionsToConfirm[action], JSON.stringify({ isValid, data: data }))
+            this.messages.pop()
         },
         async getAllMessages(id) {
             socket.on("getAllMessages", (mess) => {

@@ -59,7 +59,6 @@ watch(
 )
 
 onMounted(() => {
-    console.log("onMounted1")
     const user = authStore.getUser
     if (user) {
         const dataForInitGame = JSON.stringify({ key: user.walletPublicKey })
@@ -69,22 +68,10 @@ onMounted(() => {
 watch(
     () => authStore.getUser,
     (newUser) => {
-        console.log("watch2")
         if (newUser) {
             const dataForInitGame = JSON.stringify({ key: newUser.walletPublicKey })
             socket.emit("initGame", dataForInitGame)
         }
     }
 )
-// watch(
-//     () => token,
-//     (newValue) => {
-//         console.log("initGame2")
-//
-//         const user = authStore.getUser
-//         const dataForInitGame = JSON.stringify({ key: user.walletPublicKey })
-//
-//         socket.emit("initGame", dataForInitGame)
-//     }
-// )
 </script>

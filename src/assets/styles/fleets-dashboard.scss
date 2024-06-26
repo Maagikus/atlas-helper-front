@@ -211,6 +211,7 @@
 		flex-direction: column;
 		gap: rem(10);
 
+
 		@media (max-width:em(1355)) {
 			flex: 0 1 45%;
 			align-items: center;
@@ -235,7 +236,7 @@
 
 	// .item-fleet__content
 	&__content {
-		text-wrap: nowrap;
+		// text-wrap: nowrap;
 		color: rgb(0, 0, 0);
 		font-family: Inter;
 		font-size: rem(16);
