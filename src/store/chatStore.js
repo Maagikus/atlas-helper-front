@@ -85,8 +85,8 @@ export const useChatStore = defineStore("chat", {
                 //  }
                 if (data.content.intermediateSteps && data.content.intermediateSteps.process) {
                     console.log("data", data)
-
-                    if (data.content.intermediateSteps.fleet instanceof Array) {
+                    console.log("data.content.intermediateSteps?.fleet", data.content.intermediateSteps?.fleet)
+                    if (data.content.intermediateSteps?.fleet instanceof Array) {
                         const listOfFleets = data.content.intermediateSteps.fleet
                         const dataForSending = { ...data.content.intermediateSteps, key: useAuthStore().getUser.walletPublicKey, userId: useAuthStore().getUser.id, fleetId: [] }
 
