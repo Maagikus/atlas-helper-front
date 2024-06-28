@@ -75,6 +75,7 @@ const confirmation = (value, action, data) => {
     const formatedAction = action.toLowerCase()
 
     chatStore.confirmAction(formatedAction, value, data)
+    formData.value = {}
 }
 onMounted(async () => {
     await chatStore.getAllMessages(authStore.getUser.id)
