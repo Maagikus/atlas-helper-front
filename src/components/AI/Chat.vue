@@ -20,6 +20,9 @@
                                     <label :for="key">{{ key }}</label>
                                     <input :id="key" type="text" class="item-chat-message__input" v-model="formData[key]" :value="formData[key]" />
                                 </div>
+                                <div v-if="item.content.resourceValue">
+                                    {{ item.content.resourceValue }}
+                                </div>
                                 <div v-if="item.confirmation" class="item-chat-message__control">
                                     <button @click="confirmation(true, item.content.process, formData)" class="item-chat-message__button">Yes</button>
                                     <button @click="confirmation(false, item.content.process, formData)" class="item-chat-message__button">No</button>
