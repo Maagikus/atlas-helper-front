@@ -3,7 +3,7 @@
     <div class="chat">
         <div v-if="isAppearInfo" class="chat__information information-chat">
             <div v-if="dataToValidate">
-                <form @submit="" class="information-chat__form">
+                <form @submit.prevent="() => {}" class="information-chat__form">
                     <div v-for="(instruction, index) in dataToValidate" class="information-chat__items" :key="index">
                         <div v-for="(value, key) in instruction">
                             <template v-if="Array.isArray(value)">
@@ -19,6 +19,8 @@
                                             overlayClass="overlay"
                                             dropdownClass="dropdownclass"
                                             forceSelection
+                                            selectOnFocus
+                                            @option-select="select($event, index, subIndex)"
                                             :suggestions="filteredResources"
                                             @complete="search"
                                         />
@@ -37,8 +39,8 @@
                         </div>
                     </div>
                     <div class="information-chat__control">
-                        <button @click="confirmTransfer(formDataForTransfer, true)" class="information-chat__button">Confirm</button>
-                        <button @click="confirmTransfer(formDataForTransfer, false)" class="information-chat__button">Reject</button>
+                        <div @click="confirmTransfer(formDataForTransfer, true)" class="information-chat__button">Confirm</div>
+                        <div @click="confirmTransfer(formDataForTransfer, false)" class="information-chat__button">Reject</div>
                     </div>
                 </form>
             </div>
@@ -101,11 +103,29 @@ import { socket } from "@/socket.js"
 import { useAuthStore } from "@/store/authStore.js"
 import { useChatStore } from "@/store/chatStore.js"
 import { inject } from "vue"
+import { useUserStore } from "@/store/userStore"
 // import focus from "@/directives/directives.js"
 const filteredResources = ref()
 const isAppearInfo = ref(false)
 const dataToValidate = ref(null)
+const formDataForTransfer = ref([])
+
 const items = ref([])
+const userStore = useUserStore()
+const select = (event, index, subIndex) => {
+    const currentFleet = formDataForTransfer.value[index].name
+    const fleet = userStore.getUserFleets.find((item) => item.fleetName === currentFleet)
+    const cargoCap = fleet.fleetStats.cargoStats.cargoCapacity
+
+    const size = userStore.getResources.find((item) => item.name === event.value).size
+    const amountForDeposit = cargoCap / size
+    //  console.log("selected value", event.value)
+    //  console.log("selected value", size)
+    //  console.log("selected value", amountForDeposit)
+    console.log("subIndex", subIndex)
+    //  console.log("formDataForTransfer.value[index].resources", formDataForTransfer.value[index].resources)
+    formDataForTransfer.value[index].resources[subIndex].startValue = Math.floor(amountForDeposit)
+}
 const resource = inject("resources")
 console.log(resource) // Check the injected resources
 const search = (event) => {
@@ -135,7 +155,6 @@ const sendAnswer = () => {
 const messages = ref([])
 const message = ref("")
 const formData = ref({})
-const formDataForTransfer = ref([])
 const authStore = useAuthStore()
 const chatStore = useChatStore()
 
