@@ -12,9 +12,14 @@ export const useChatStore = defineStore("chat", {
             dock: useGameStore().dockFleet,
             undock: useGameStore().dockFleet,
         },
+        transferValidation: {
+            isAppear: false,
+            dataToValidate: null,
+        },
     }),
     getters: {
         getMessages: (state) => state.messages,
+        getTransferValidation: (state) => state.transferValidation,
     },
     actions: {
         initSocketListeners() {
@@ -35,6 +40,16 @@ export const useChatStore = defineStore("chat", {
                 //  }
                 this.messages.push({ content: data, isAssistant: true, confirmation: true })
             })
+            socket.on("ask-question", (mess) => {
+                const data = JSON.parse(mess)
+                this.messages.push({ content: data, isAssistant: true, AIquestion: true })
+            })
+
+            socket.on("ask-user-for-data", (mess) => {
+                const data = JSON.parse(mess)
+                console.log("data", data)
+                this.messages.push({ content: data, isAssistant: true })
+            })
             socket.on("validate-dock-request", (mess) => {
                 const data = JSON.parse(mess)
                 //  console.log("for validating", data)
@@ -52,13 +67,24 @@ export const useChatStore = defineStore("chat", {
                 //  }
                 this.messages.push({ content: data, isAssistant: true, confirmation: true })
             })
+            // socket.on("validate-transfer-request", (mess) => {
+            //     const data = JSON.parse(mess)
+            //     //  console.log("for validating", data)
+            //     //  if (!data) {
+            //     //      socket.emit("validate-undock-request", JSON.stringify({ isValid: false }))
+            //     //  }
+            //     this.messages.push({ content: data, isAssistant: true, confirmation: true })
+            // })
             socket.on("validate-transfer-request", (mess) => {
                 const data = JSON.parse(mess)
                 //  console.log("for validating", data)
                 //  if (!data) {
                 //      socket.emit("validate-undock-request", JSON.stringify({ isValid: false }))
                 //  }
-                this.messages.push({ content: data, isAssistant: true, confirmation: true })
+                this.transferValidation.isAppear = true
+                this.transferValidation.dataToValidate = data
+                console.log("this.transferValidation.dataToValidate", this.transferValidation.dataToValidate.data)
+                //  this.messages.push({ content: data, isAssistant: true, confirmation: true })
             })
             socket.on("validate-mining-request", (mess) => {
                 const data = JSON.parse(mess)
@@ -86,6 +112,28 @@ export const useChatStore = defineStore("chat", {
                 if (data.content.intermediateSteps && data.content.intermediateSteps.process) {
                     console.log("data", data)
                     console.log("data.content.intermediateSteps?.fleet", data.content.intermediateSteps?.fleet)
+                    if (data.content.intermediateSteps.process === "transfer" && data.content.intermediateSteps.data instanceof Array) {
+                        const instructionsArray = data.content.intermediateSteps.data
+                        const dataForSending = {
+                            data: { instr: instructionsArray },
+                            key: useAuthStore().getUser.walletPublicKey,
+                            userId: useAuthStore().getUser.id,
+                            process: data.content.intermediateSteps.process,
+                        }
+                        const changedArrayOfInstructions = dataForSending.data.instr.map((item) => {
+                            const fleet = useUserStore().getUserFleets.find((i) => i.fleetName === item.name)
+                            return { ...item, fleetId: fleet.fleetKey }
+                        })
+                        dataForSending.data.instr = changedArrayOfInstructions
+                        console.log("dataForSending", dataForSending)
+                        // for (let index = 0; index < dataForSending.data.instr.length; index++) {
+                        //     const element = instructionsArray[index]
+                        //     dataForSending.data.fleetId.push(fleet.fleetKey)
+                        // }
+                        const selectedFunction = processActions[dataForSending.process]
+                        selectedFunction(dataForSending)
+                        return
+                    }
                     if (data.content.intermediateSteps?.fleet instanceof Array) {
                         const listOfFleets = data.content.intermediateSteps.fleet
                         const dataForSending = { ...data.content.intermediateSteps, key: useAuthStore().getUser.walletPublicKey, userId: useAuthStore().getUser.id, fleetId: [] }
@@ -132,6 +180,15 @@ export const useChatStore = defineStore("chat", {
             }
 
             socket.emit(actionsToConfirm[action], JSON.stringify({ isValid, data: data }))
+            this.messages.pop()
+        },
+        async confirmTransfer(data, isValid) {
+            socket.emit("validate-transfer-request", JSON.stringify({ isValid, data }))
+            this.transferValidation.isAppear = false
+            this.transferValidation.dataToValidate = null
+        },
+        async answer(answer) {
+            socket.emit("answer-question", JSON.stringify(answer))
             this.messages.pop()
         },
         async getAllMessages(id) {

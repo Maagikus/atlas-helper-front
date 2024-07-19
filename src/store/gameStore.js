@@ -60,6 +60,7 @@ export const useGameStore = defineStore("game", {
 
                 useUserStore().setError(error)
             })
+
             socket.on("initGame", (mess) => {
                 const { isInited } = mess
                 if (!isInited) {

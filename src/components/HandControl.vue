@@ -22,8 +22,10 @@
                             <div class="form__item">
                                 <label for="resource">Ресурс:</label>
                                 <select class="input" v-model="form.resource" id="resource" name="resource" required>
-                                    <option v-for="resource in resources" :key="resource" :value="resource">
-                                        {{ resource }}
+                                    <option v-for="resource in mineRes" :key="resource" :value="resource">
+                                        <template v-if="resource.type === 'mine'">
+                                            {{ resource.name }}
+                                        </template>
                                     </option>
                                 </select>
                             </div>
@@ -117,7 +119,7 @@
                                         <div class="select__wrap">
                                             <select class="select__item input" v-model="formForTransfer.resource" id="resource" name="resource" required>
                                                 <option v-for="resource in resources" :key="resource" :value="resource">
-                                                    {{ resource }}
+                                                    {{ resource.name }}
                                                 </option>
                                             </select>
                                             <input
@@ -181,7 +183,7 @@
                                         <div class="select__wrap">
                                             <select class="select__item input" v-model="formForTransfer.resource" id="resource" name="resource" required>
                                                 <option v-for="resource in resources" :key="resource" :value="resource">
-                                                    {{ resource }}
+                                                    {{ resource.name }}
                                                 </option>
                                             </select>
                                             <input
@@ -254,6 +256,7 @@ import GameControl from "@/components/GameControl.vue"
 import { useAuthStore } from "@/store/authStore.js"
 import Chat from "@/components/AI/Chat.vue"
 import { useGameStore } from "@/store/gameStore"
+import { computed } from "vue"
 
 const userStore = useUserStore()
 const authStore = useAuthStore()
@@ -262,6 +265,9 @@ const fleetData = ref([])
 const menuItem = ref(0)
 
 const resources = ref([])
+const mineRes = computed(() => {
+    return resources.value.filter((item) => item.type === "mine")
+})
 const form = reactive({
     loop: "",
     food: "",
@@ -309,7 +315,7 @@ const setMiningSettings = (dataForMining) => {
         loop: dataForMining.loop,
         key: authStore.getUser.walletPublicKey,
         priorityFee: dataForMining.feeToTransaction,
-        resource: dataForMining.resource,
+        resource: dataForMining.resource.name,
         fleet: dataForMining.fleet,
         planet: dataForMining.planet,
         userId: authStore.getUser.id,
@@ -329,7 +335,7 @@ const setSettings = (dataForSending) => {
         resourceValueAtStartingPoint: dataForSending.resourceValueAtStartingPoint,
         loop: dataForSending.loop,
         key: authStore.getUser.walletPublicKey,
-        resource: dataForSending.resource,
+        resource: dataForSending.resource.name,
         forwardCoordForWarp: dataForSending.forwardCoordForWarp,
         forwardCoordForSubWarp: dataForSending.forwardCoordForSubWarp,
         backCoordForWarp: dataForSending.backCoordForWarp,

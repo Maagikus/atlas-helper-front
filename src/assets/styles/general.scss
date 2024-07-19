@@ -15,11 +15,13 @@
 	// .general__navigation
 	&__navigation {
 		flex: 0 0 7.61%;
-    @media (min-width: em(1980)) {
-        flex: 0 0 100px;
+
+		@media (min-width: em(1980)) {
+			flex: 0 0 100px;
 
 
-    }
+		}
+
 		@media (max-width:$mobile) {
 			flex: 0 0 40px;
 		}
@@ -49,8 +51,17 @@
 
 	}
 
+	&__information {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: -100%;
+	}
+
 	// .general__chat
 	&__chat {
+		position: relative;
 		flex: 0 0 26.3541%;
 		min-width: 320px;
 		transition: all 0.3s ease 0s;
@@ -110,11 +121,13 @@
 		height: 100%;
 		top: 0;
 		left: 0;
-        @media (min-width: em(1980)) {
-            width: 100px;
+
+		@media (min-width: em(1980)) {
+			width: 100px;
 
 
-        }
+		}
+
 		@media (max-width:$mobile) {
 			width: 40px;
 		}

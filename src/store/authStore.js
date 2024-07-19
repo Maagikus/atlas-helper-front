@@ -20,14 +20,12 @@ export const useAuthStore = defineStore("auth", {
 
             try {
                 const res = await httpClient.post("auth/login", data)
-                console.log("res 1", res)
                 localStorage.setItem("token", JSON.stringify(res.accessToken))
                 this.isUserAuth = true
                 this.user = res.user
                 await router.push("/")
             } catch (e) {
                 console.log("res 2", e)
-
                 // this.errors.push(e)
                 // throw new Error(e)
             }

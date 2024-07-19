@@ -1,6 +1,34 @@
 //========================================================================================================================================================
 <template>
     <div class="chat">
+        <div v-if="isAppearInfo" class="chat__information information-chat">
+            <div v-if="dataToValidate">
+                <form @submit="" class="information-chat__form">
+                    <div v-for="(instruction, index) in dataToValidate" class="information-chat__items" :key="index">
+                        <div v-for="(value, key) in instruction">
+                            <template v-if="Array.isArray(value)">
+                                <div v-for="(item, subIndex) in value" :key="subIndex">
+                                    <div v-for="(item2, subIndex2) in item" :key="subIndex" class="information-chat__item">
+                                        <label :for="`${key}-${subIndex}`">{{ subIndex2 }}</label>
+                                        <input :id="`${key}-${subIndex}`" type="text" class="item-chat-message__input" v-model="formDataForTransfer[index][key][subIndex][subIndex2]" />
+                                    </div>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="information-chat__item">
+                                    <label :for="key">{{ key }}</label>
+                                    <input :id="key" type="text" class="item-chat-message__input" v-model="formDataForTransfer[index][key]" />
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="information-chat__control">
+                        <button @click="confirmTransfer(formDataForTransfer, true)" class="information-chat__button">Confirm</button>
+                        <button @click="confirmTransfer(formDataForTransfer, false)" class="information-chat__button">Reject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="chat__wrapper">
             <div class="chat__history history-chat">
                 <ul class="history-chat__list" ref="chatHistoryRef">
@@ -28,6 +56,10 @@
                                     <button @click="confirmation(false, item.content.process, formData)" class="item-chat-message__button">No</button>
                                 </div>
                             </div>
+                            <div v-if="item.AIquestion">
+                                <label>{{ item.content }}</label>
+                                <input v-focus v-model="answer" @keydown.enter="sendAnswer" />
+                            </div>
                             <div v-else>
                                 {{ item.content }}
                             </div>
@@ -53,10 +85,24 @@ import { nextTick, onBeforeMount, onMounted, ref, watch, watchEffect } from "vue
 import { socket } from "@/socket.js"
 import { useAuthStore } from "@/store/authStore.js"
 import { useChatStore } from "@/store/chatStore.js"
-
+// import focus from "@/directives/directives.js"
+const isAppearInfo = ref(false)
+const dataToValidate = ref(null)
+const confirmTransfer = async (data, isValid) => {
+    await chatStore.confirmTransfer(data, isValid)
+}
+const vFocus = {
+    mounted: (el) => el.focus(),
+}
+const answer = ref(null)
+const sendAnswer = () => {
+    chatStore.answer(answer.value)
+    answer.value = ""
+}
 const messages = ref([])
 const message = ref("")
 const formData = ref({})
+const formDataForTransfer = ref([])
 const authStore = useAuthStore()
 const chatStore = useChatStore()
 
@@ -83,9 +129,28 @@ const confirmation = (value, action, data) => {
 onMounted(async () => {
     await chatStore.getAllMessages(authStore.getUser.id)
     chatStore.initSocketListeners()
+    const getTransferValidation = chatStore.getTransferValidation
+    isAppearInfo.value = getTransferValidation.isAppear
 
     // messages.value = [...chatStore.getMessages]
 })
+watch(
+    () => chatStore.getTransferValidation.isAppear,
+    (newValue) => {
+        //   console.log("newValue", newValue)
+        isAppearInfo.value = newValue
+        if (newValue) {
+            const transferValidation = chatStore.getTransferValidation.dataToValidate.data
+            if (transferValidation.length) {
+                dataToValidate.value = transferValidation
+                for (let index = 0; index < dataToValidate.value.length; index++) {
+                    const element = dataToValidate.value[index]
+                    formDataForTransfer.value[index] = element
+                }
+            }
+        }
+    }
+)
 watch(
     () => chatStore.getMessages,
     (newMessages) => {

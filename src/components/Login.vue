@@ -48,7 +48,7 @@
                 <div class="auth__footer footer-auth">
                     <div class="footer-auth__header">or continue with</div>
                     <div class="footer-auth__google">
-                        <a href="https://api.labs-helper.site/my-app/v1/auth/google" class="footer-auth__button google"><img src="../assets/images/Google.svg" alt="Google" /> <span>Google</span></a>
+                        <a href="http://localhost:4040/my-app/v1/auth/google" class="footer-auth__button google"><img src="../assets/images/Google.svg" alt="Google" /> <span>Google</span></a>
                     </div>
                     <div class="footer-auth__privacy">By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></div>
                 </div>
