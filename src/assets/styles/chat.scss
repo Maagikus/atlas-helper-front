@@ -467,4 +467,116 @@
 		gap: rem(10);
 		align-items: center;
 	}
+
+	&__dropdown {
+		background-color: #fff;
+		box-shadow: 1px 2px 10px 1px rgba(0, 0, 0, 0.25);
+
+		ul {
+			display: flex;
+			flex-direction: column;
+			// gap: rem(5);
+
+			li {
+				cursor: pointer;
+				padding: 5px 5px;
+
+				:not(:last-child) {
+					border-bottom: 1px solid #727272;
+				}
+
+				background-color: #fff;
+				transition: all 0.3s ease 0s;
+
+				@media (any-hover: hover) {
+					&:hover {
+						background-color: #f3f3f3;
+					}
+				}
+
+			}
+		}
+	}
+}
+
+.plus {
+	cursor: pointer;
+	position: relative;
+	width: 35px;
+	height: 35px;
+	background-color: #f0f0f0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: all 0.3s ease 0s;
+
+	@media (any-hover: hover) {
+		&:hover {
+			background-color: #cacaca;
+
+			&::after,
+			&::before {
+				background-color: #fff;
+			}
+		}
+	}
+}
+
+.plus::before,
+.plus::after {
+	content: '';
+	transition: all 0.3s ease 0s;
+	position: absolute;
+	background-color: #333;
+
+}
+
+.plus::before {
+	width: 20px;
+	height: 2px;
+
+}
+
+.plus::after {
+	width: 2px;
+	height: 20px;
+
+}
+
+
+
+.minus {
+	cursor: pointer;
+	position: relative;
+	width: 35px;
+	height: 35px;
+	background-color: #f0f0f0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: all 0.3s ease 0s;
+
+	@media (any-hover: hover) {
+		&:hover {
+			background-color: #cacaca;
+
+			&::before {
+				background-color: #fff;
+			}
+		}
+	}
+}
+
+.minus::before {
+	content: '';
+	transition: all 0.3s ease 0s;
+	position: absolute;
+	background-color: #333;
+
+}
+
+.minus::before {
+	width: 20px;
+	height: 2px;
+
 }

@@ -10,9 +10,23 @@
                                 <div v-for="(item, subIndex) in value" :key="subIndex">
                                     <div v-for="(item2, subIndex2) in item" :key="subIndex" class="information-chat__item">
                                         <label :for="`${key}-${subIndex}`">{{ subIndex2 }}</label>
-                                        <input :id="`${key}-${subIndex}`" type="text" class="item-chat-message__input" v-model="formDataForTransfer[index][key][subIndex][subIndex2]" />
+
+                                        <AutoComplete
+                                            v-if="subIndex2 === 'name'"
+                                            v-model="formDataForTransfer[index][key][subIndex][subIndex2]"
+                                            panelClass="information-chat__dropdown"
+                                            inputClass="inputtest"
+                                            overlayClass="overlay"
+                                            dropdownClass="dropdownclass"
+                                            forceSelection
+                                            :suggestions="filteredResources"
+                                            @complete="search"
+                                        />
+                                        <input v-else :id="`${key}-${subIndex}`" type="number" class="item-chat-message__input" v-model="formDataForTransfer[index][key][subIndex][subIndex2]" />
                                     </div>
+                                    <div class="minus" @click="removeField(index, item2)"></div>
                                 </div>
+                                <div class="plus" @click="addField(index)"></div>
                             </template>
                             <template v-else>
                                 <div class="information-chat__item">
@@ -81,13 +95,32 @@
     </div>
 </template>
 <script setup>
+import AutoComplete from "primevue/autocomplete"
 import { nextTick, onBeforeMount, onMounted, ref, watch, watchEffect } from "vue"
 import { socket } from "@/socket.js"
 import { useAuthStore } from "@/store/authStore.js"
 import { useChatStore } from "@/store/chatStore.js"
+import { inject } from "vue"
 // import focus from "@/directives/directives.js"
+const filteredResources = ref()
 const isAppearInfo = ref(false)
 const dataToValidate = ref(null)
+const items = ref([])
+const resource = inject("resources")
+console.log(resource) // Check the injected resources
+const search = (event) => {
+    setTimeout(() => {
+        if (!event.query.trim().length) {
+            filteredResources.value = [...resource.value]
+        } else {
+            filteredResources.value = resource.value.filter((item) => {
+                return item.toLowerCase().startsWith(event.query.toLowerCase())
+            })
+        }
+    }, 0)
+}
+
+// const items = ref([])
 const confirmTransfer = async (data, isValid) => {
     await chatStore.confirmTransfer(data, isValid)
 }
@@ -134,6 +167,21 @@ onMounted(async () => {
 
     // messages.value = [...chatStore.getMessages]
 })
+const addField = (index) => {
+    dataToValidate.value[index].resources.push({ name: "", startValue: 0, endValue: 0 })
+}
+const removeField = (index, resIndex) => {
+    dataToValidate.value[index].resources.splice(resIndex, 1)
+}
+watch(
+    () => dataToValidate.value,
+    (newValue) => {
+        for (let index = 0; index < newValue.length; index++) {
+            const element = newValue[index]
+            formDataForTransfer.value[index] = element
+        }
+    }
+)
 watch(
     () => chatStore.getTransferValidation.isAppear,
     (newValue) => {
@@ -143,6 +191,7 @@ watch(
             const transferValidation = chatStore.getTransferValidation.dataToValidate.data
             if (transferValidation.length) {
                 dataToValidate.value = transferValidation
+                //  items.value = [...resource.value]
                 for (let index = 0; index < dataToValidate.value.length; index++) {
                     const element = dataToValidate.value[index]
                     formDataForTransfer.value[index] = element

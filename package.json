@@ -29,7 +29,7 @@
     "flatted": "^3.2.9",
     "pinia": "^2.1.7",
     "prettier": "^3.2.5",
-    "primevue": "^4.0.0-rc.2",
+    "primevue": "^4.0.0",
     "sass": "^1.77.0",
     "socket.io-client": "^4.7.4",
     "solana-wallets-vue": "^0.6.1",

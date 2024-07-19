@@ -38,14 +38,19 @@
 </template>
 <script setup>
 import Chat from "@/components/AI/Chat.vue"
-import { onMounted, watch } from "vue"
+import { onMounted, watch, provide, ref } from "vue"
 import { socket } from "../socket"
 import { useAuthStore } from "@/store/authStore.js"
+import { useUserStore } from "@/store/userStore"
 import { useDocumentVisibility } from "@vueuse/core"
-const token = localStorage.getItem("token")
 
+const token = localStorage.getItem("token")
+const userStore = useUserStore()
 const authStore = useAuthStore()
 const visibility = useDocumentVisibility()
+const resources = ref([])
+provide("resources", resources)
+
 watch(
     () => visibility.value,
     (newValue) => {
@@ -59,11 +64,13 @@ watch(
     }
 )
 
-onMounted(() => {
+onMounted(async () => {
     const user = authStore.getUser
     if (user) {
         const dataForInitGame = JSON.stringify({ key: user.walletPublicKey })
         socket.emit("initGame", dataForInitGame)
+        await userStore.loadResources(user.walletPublicKey)
+        resources.value = userStore.getResources.map((resource) => resource.name)
     }
 })
 watch(
