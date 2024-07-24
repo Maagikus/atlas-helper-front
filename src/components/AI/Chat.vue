@@ -10,7 +10,6 @@
                                 <div v-for="(item, subIndex) in value" :key="subIndex">
                                     <div v-for="(item2, subIndex2) in item" :key="subIndex" class="information-chat__item">
                                         <label :for="`${key}-${subIndex}`">{{ subIndex2 }}</label>
-
                                         <AutoComplete
                                             v-if="subIndex2 === 'name'"
                                             v-model="formDataForTransfer[index][key][subIndex][subIndex2]"
@@ -24,16 +23,39 @@
                                             :suggestions="filteredResources"
                                             @complete="search"
                                         />
+
                                         <input v-else :id="`${key}-${subIndex}`" type="number" class="item-chat-message__input" v-model="formDataForTransfer[index][key][subIndex][subIndex2]" />
                                     </div>
-                                    <div class="minus" @click="removeField(index, item2)"></div>
+                                    <div class="minus" @click="removeField(index, item)"></div>
                                 </div>
                                 <div class="plus" @click="addField(index)"></div>
                             </template>
                             <template v-else>
                                 <div class="information-chat__item">
-                                    <label :for="key">{{ key }}</label>
-                                    <input :id="key" type="text" class="item-chat-message__input" v-model="formDataForTransfer[index][key]" />
+                                    <template v-if="key === 'ammo' || key === 'fuel'">
+                                        <template v-for="(value2, key2) in value">
+                                            <template v-if="key2 === 'ammoValue' || key2 === 'fuelValue'">
+                                                <input
+                                                    :id="'c_' + index + key2"
+                                                    class="checkbox-filter__input checkbox__input"
+                                                    type="checkbox"
+                                                    v-model="formDataForTransfer[index][key][key2]"
+                                                    name="form[]"
+                                                />
+                                                <label :for="'c_' + index + key2" class="checkbox__label checkbox-filter__label"
+                                                    ><span class="checkbox-filter__text checkbox__text">{{ key2 }}</span></label
+                                                >
+                                            </template>
+                                            <template v-else>
+                                                <label :for="key2">{{ key2 }}</label>
+                                                <input :id="key2" type="number" class="item-chat-message__input" v-model="formDataForTransfer[index][key][key2]" />
+                                            </template>
+                                        </template>
+                                    </template>
+                                    <template v-else>
+                                        <label :for="key">{{ key }}</label>
+                                        <input :id="key" type="text" class="item-chat-message__input" v-model="formDataForTransfer[index][key]" />
+                                    </template>
                                 </div>
                             </template>
                         </div>
@@ -113,19 +135,22 @@ const formDataForTransfer = ref([])
 const items = ref([])
 const userStore = useUserStore()
 const select = (event, index, subIndex) => {
+    const countOfRes = formDataForTransfer.value[index].resources.length
+
     const currentFleet = formDataForTransfer.value[index].name
     const fleet = userStore.getUserFleets.find((item) => item.fleetName === currentFleet)
     const cargoCap = fleet.fleetStats.cargoStats.cargoCapacity
 
     const size = userStore.getResources.find((item) => item.name === event.value).size
-    const amountForDeposit = cargoCap / size
-    //  console.log("selected value", event.value)
-    //  console.log("selected value", size)
-    //  console.log("selected value", amountForDeposit)
-    console.log("subIndex", subIndex)
-    //  console.log("formDataForTransfer.value[index].resources", formDataForTransfer.value[index].resources)
-    formDataForTransfer.value[index].resources[subIndex].startValue = Math.floor(amountForDeposit)
+    const amountForDeposit = cargoCap / size / countOfRes
+
+    // Обновляем все значения startValue для всех ресурсов
+    updateStartValues(index)
+    //  formDataForTransfer.value[index].resources.forEach((resource, idx) => {
+    //      resource.startValue = Math.floor(amountForDeposit)
+    //  })
 }
+
 const resource = inject("resources")
 console.log(resource) // Check the injected resources
 const search = (event) => {
@@ -187,10 +212,33 @@ onMounted(async () => {
     // messages.value = [...chatStore.getMessages]
 })
 const addField = (index) => {
-    dataToValidate.value[index].resources.push({ name: "", startValue: 0, endValue: 0 })
+    formDataForTransfer.value[index].resources.push({ name: "", startValue: 0, endValue: 0 })
+    updateStartValues(index)
 }
-const removeField = (index, resIndex) => {
-    dataToValidate.value[index].resources.splice(resIndex, 1)
+
+const removeField = (index, item) => {
+    console.log("index", index)
+    console.log("item", item)
+    const resourceIndex = formDataForTransfer.value[index].resources.indexOf(item)
+    console.log("resourceIndex", resourceIndex)
+    if (resourceIndex !== -1) {
+        formDataForTransfer.value[index].resources.splice(resourceIndex, 1)
+        updateStartValues(index)
+    }
+}
+const updateStartValues = (index) => {
+    const countOfRes = formDataForTransfer.value[index].resources.length
+
+    const currentFleet = formDataForTransfer.value[index].name
+    const fleet = userStore.getUserFleets.find((item) => item.fleetName === currentFleet)
+    const cargoCap = fleet.fleetStats.cargoStats.cargoCapacity
+
+    formDataForTransfer.value[index].resources.map((resource) => {
+        const size = userStore.getResources.find((item) => item.name === resource.name)?.size
+        console.log(resource, size)
+        const amountForDeposit = cargoCap / size / countOfRes
+        resource.startValue = Math.floor(amountForDeposit)
+    })
 }
 watch(
     () => dataToValidate.value,
@@ -235,6 +283,7 @@ watch(
         setTimeout(scrollToBottom, 0)
     }
 )
+
 watchEffect(async () => {
     // chatStore.initSocketListeners()
     messages.value = [...chatStore.getMessages]
