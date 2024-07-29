@@ -30,7 +30,6 @@
             </aside>
             <div class="general__content content-general"><slot></slot></div>
             <div class="general__chat">
-                <div class="general__information"></div>
                 <Chat></Chat>
             </div>
         </div>
