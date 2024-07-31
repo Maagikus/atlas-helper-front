@@ -208,6 +208,37 @@ export const useGameStore = defineStore("game", {
             //     socket.emit("updateFleetState", JSON.stringify({ fleetName: data.fleet }))
             // }
         },
+        async withdraw(data) {
+            //HERE WAS DATA
+            // const data = {
+            //     key: useAuthStore().getUser.walletPublicKey,
+            //     fleet: fleet,
+            //     priorityFee: 1,
+            // }
+
+            if (this.serverPlay) {
+                try {
+                    socket.emit("withdraw", JSON.stringify(data))
+                } catch (e) {
+                    console.log("withdraw", e)
+                }
+            }
+            // else {
+            //     const { program, craftingProgram, wallet, connection, provider } = useWorkspace()
+            //     const { sageGameHandler } = await this.setupSageGameHandlerReadyAndLoadGame(connection, provider.value)
+            //     const sageFleetHandler = new SageFleetHandler(sageGameHandler)
+            //     let ix
+            //     let rx
+            //     const playerPubkey = new PublicKey(wallet.value.publicKey.toBase58())
+            //     const playerProfilePubkey = await sageGameHandler.getPlayerProfileAddress(playerPubkey)
+            //     const fleetPubkey = sageGameHandler.getFleetAddress(playerProfilePubkey, data.fleet)
+            //     const fleetAccount = await sageFleetHandler.getFleetAccount(fleetPubkey)
+            //     ix = await sageFleetHandler.ixDockToStarbase(fleetPubkey, playerPubkey)
+            //     rx = await sageGameHandler.txSignAndSend(ix, data.fleet, "DOCK", 0, playerPubkey, wallet.value)
+            //     console.log("rx", rx)
+            //     socket.emit("updateFleetState", JSON.stringify({ fleetName: data.fleet }))
+            // }
+        },
         async undockFleet(data) {
             // const data = {
             //     key: useAuthStore().getUser.walletPublicKey,
