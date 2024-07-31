@@ -27,6 +27,7 @@ export const useChatStore = defineStore("chat", {
             const processActions = {
                 dock: gameStore.dockFleet,
                 undock: gameStore.undockFleet,
+                withdraw: gameStore.withdraw,
                 mining: gameStore.startMining,
                 transfer: gameStore.transferSmth,
                 subwarp: gameStore.subWarp,
@@ -51,6 +52,14 @@ export const useChatStore = defineStore("chat", {
                 this.messages.push({ content: data, isAssistant: true })
             })
             socket.on("validate-dock-request", (mess) => {
+                const data = JSON.parse(mess)
+                //  console.log("for validating", data)
+                //  if (!data) {
+                //      socket.emit("validate-undock-request", JSON.stringify({ isValid: false }))
+                //  }
+                this.messages.push({ content: data, isAssistant: true, confirmation: true })
+            })
+            socket.on("validate-withdraw-request", (mess) => {
                 const data = JSON.parse(mess)
                 //  console.log("for validating", data)
                 //  if (!data) {
@@ -177,6 +186,7 @@ export const useChatStore = defineStore("chat", {
                 mining: "validate-mining-request",
                 transfer: "validate-transfer-request",
                 subwarp: "validate-subwarp-request",
+                withdraw: "validate-withdraw-request",
             }
 
             socket.emit(actionsToConfirm[action], JSON.stringify({ isValid, data: data }))
