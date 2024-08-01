@@ -281,7 +281,7 @@ export const useGameStore = defineStore("game", {
             //     forwardCoordForWarp: coord,
             // }
             // console.log(data.key)
-            console.log("data", data)
+            // console.log("data subwarp", data)
             socket.emit("subwarp", JSON.stringify(data))
         },
         async moveTo(fleet, coord) {
