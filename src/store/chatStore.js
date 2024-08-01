@@ -31,7 +31,7 @@ export const useChatStore = defineStore("chat", {
                 mining: gameStore.startMining,
                 transfer: gameStore.transferSmth,
                 subwarp: gameStore.subWarp,
-                //  move: gameStore.moveTo,
+                movement: gameStore.subWarp,
             }
             socket.on("validate-undock-request", (mess) => {
                 const data = JSON.parse(mess)
